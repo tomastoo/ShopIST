@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">ShopIST</string>
+    <string name="group1">Menu</string>
+    <string name="group2">Pantry Lists</string>
+    <string name="group3">Shopping Lists</string>
+    
+    <string-array name="group1">
+        <item>Profile</item>
+    </string-array>
+    <string-array name="group2">
+        <item>PL1</item>
+        <item>PL2</item>
+        <item>PL3</item>
+        <item>+</item>
+    </string-array>
+    <string-array name="group3">
+        <item>SL1</item>
+        <item>SL2</item>
+        <item>+</item>
+    </string-array>
 </resources>
