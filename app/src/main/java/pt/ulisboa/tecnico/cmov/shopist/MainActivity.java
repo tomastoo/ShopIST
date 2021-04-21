@@ -2,15 +2,19 @@ package pt.ulisboa.tecnico.cmov.shopist;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ExpandableListView.OnChildClickListener {
 
+    public static final String EXTRA_MESSAGE = "pt.ulisboa.tecnico.cmov.shopist.MESSAGE";
     // Main Activity Options
     ExpandableListView expandableListView;
     List<String> listGroup;
@@ -27,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         listItem = new HashMap<>();
         adapter = new MainAdapter(this, listGroup, listItem);
         expandableListView.setAdapter(adapter);
+        expandableListView.setOnChildClickListener(this);
         initListData();
     }
 
@@ -58,6 +63,31 @@ public class MainActivity extends AppCompatActivity {
         listItem.put(listGroup.get(1), list2);
         listItem.put(listGroup.get(2), list3);
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+        String item = (String) parent.getExpandableListAdapter().getChild(groupPosition, childPosition);
+        /*Toast.makeText(getApplicationContext(), item, Toast.LENGTH_SHORT).show();*/
+
+        String group = (String) parent.getExpandableListAdapter().getGroup(groupPosition);
+        //Toast.makeText(getApplicationContext(), item, Toast.LENGTH_SHORT).show();
+
+        switch (group){
+            case "Menu":
+                Toast.makeText(getApplicationContext(), "A1", Toast.LENGTH_SHORT).show();
+                break;
+            case "Pantry Lists":
+                Toast.makeText(getApplicationContext(), "A2", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, PantryList.class);
+                intent.putExtra(EXTRA_MESSAGE, item);
+                startActivity(intent);
+                break;
+            case "Shopping Lists":
+                Toast.makeText(getApplicationContext(), "A3", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return false;
     }
 }
 
