@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import util.main.MainAdapter;
+
 public class MainActivity extends AppCompatActivity implements ExpandableListView.OnChildClickListener {
 
     public static final String EXTRA_MESSAGE = "pt.ulisboa.tecnico.cmov.shopist.MESSAGE";

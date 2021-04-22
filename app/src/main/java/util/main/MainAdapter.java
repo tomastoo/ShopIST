@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.shopist;
+package util.main;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import java.util.HashMap;
 import java.util.List;
+
+import pt.ulisboa.tecnico.cmov.shopist.R;
 
 public class MainAdapter extends BaseExpandableListAdapter {
     Context context;
