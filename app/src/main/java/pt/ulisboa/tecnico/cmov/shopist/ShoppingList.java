@@ -22,14 +22,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import util.db.queryInterfaces.ShopDAO;
+import util.db.queryInterfaces.ShopItem;
+import util.main.SharedClass;
+
 public class ShoppingList extends AppCompatActivity {
-    PopupWindow pw;
+    private SharedClass sharedClass;
+    private String shopName;
     private void fillList() {
         ListView listView =  findViewById(R.id.ListViewShoppingList);
-        String[] values = new String[] { "Pão", "Brocolos", "Pêssego",
-                "Compal 1.5L Manga Laranja", "Borrego 1kg" };
 
-        final StableAdapter adapter = new StableAdapter(this, values);
+        ShopDAO shopDAO = sharedClass.dbShopIst.shopDAO();
+
+        final StableAdapter adapter = new StableAdapter(this, shopDAO);
         listView.setAdapter(adapter);
 
        /* listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -55,6 +60,8 @@ public class ShoppingList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_list);
+        sharedClass = (SharedClass)getApplicationContext();
+        shopName = "Shop1"; //TODO : Buscar por intent da main activity
         fillList();
     }
 
@@ -86,11 +93,12 @@ public class ShoppingList extends AppCompatActivity {
         ArrayList<ShoppingItem> shoppingItems = new ArrayList<>();
         private LayoutInflater inflater = null;
 
-        public StableAdapter(Context context, String[] data) {
+        public StableAdapter(Context context, ShopDAO data) {
             // TODO Auto-generated constructor stub
             this.context = context;
-            for (String s : data ) {
-                shoppingItems.add(new ShoppingItem(s, "5", "7"));
+
+            for (ShopItem s : data.getAllItems() ) {
+                shoppingItems.add(new ShoppingItem(s.name, String.valueOf(s.quantity), String.valueOf(s.price)));
             }
             inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -132,9 +140,8 @@ public class ShoppingList extends AppCompatActivity {
 
             View finalVi = vi;
             ((ImageButton)vi.findViewById(R.id.shoppingCart)).setOnClickListener((View.OnClickListener) v -> {
-/*                pw = new PopupWindow(ShoppingList.this);
-                pw.showAtLocation(finalVi, Gravity.CENTER,0,0);
-
+/*           pw = new PopupWindow(ShoppingList.this);
+             pw.showAtLocation(finalVi, Gravity.CENTER,0,0);
  */
                 finalVi.animate().setDuration(1000).alpha(0).withEndAction(new Runnable() {
                     @Override

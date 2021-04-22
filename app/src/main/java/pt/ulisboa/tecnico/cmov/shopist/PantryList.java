@@ -15,7 +15,6 @@ import androidx.room.Room;
 import java.util.ArrayList;
 import java.util.List;
 
-import util.db.DatabaseShopIst;
 import util.db.entities.Pantry;
 import util.db.queryInterfaces.PantryDAO;
 import util.db.queryInterfaces.PantryItem;
@@ -29,19 +28,17 @@ public class PantryList extends AppCompatActivity {
     //private SharedClass sharedClass
     private ArrayList<PantryItem> pantryItemList;
     private PantryListAdapter pantryListAdapter;
-    private DatabaseShopIst shopIstDb;
-
+    private SharedClass sc;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pantry_list);
 
-
+        sc = (SharedClass)getApplicationContext();
         Intent intent = getIntent();
         name = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
 
-        shopIstDb = Room.databaseBuilder(getApplicationContext(), DatabaseShopIst.class, "shopIstDb").build();
-        pantryDAO = shopIstDb.pantryDAO();
+        pantryDAO = sc.dbShopIst.pantryDAO();
 
         AsyncTask.execute(this::showItemList);
         AsyncTask.execute(this::setMap);

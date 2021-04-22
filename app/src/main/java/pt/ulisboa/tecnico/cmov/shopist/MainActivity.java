@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import util.main.MainAdapter;
+import util.main.SharedClass;
 
 public class MainActivity extends AppCompatActivity implements ExpandableListView.OnChildClickListener {
 
@@ -22,12 +23,12 @@ public class MainActivity extends AppCompatActivity implements ExpandableListVie
     List<String> listGroup;
     HashMap<String, List<String>> listItem;
     MainAdapter adapter;
-
+    private SharedClass sharedClass;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        ((SharedClass)getApplicationContext()).instanceDb();
         expandableListView = findViewById(R.id.expand_activities_button);
         listGroup = new ArrayList<>();
         listItem = new HashMap<>();
