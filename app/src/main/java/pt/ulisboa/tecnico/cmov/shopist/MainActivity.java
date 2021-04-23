@@ -1,17 +1,15 @@
 package pt.ulisboa.tecnico.cmov.shopist;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
-
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.text.Editable;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ExpandableListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -151,6 +149,19 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
                 adapter.notifyDataSetChanged();
                 break;
         }
+    }
+
+    public void Share(View view){
+        //Toast.makeText(getApplicationContext(), "Share", Toast.LENGTH_SHORT).show();
+
+        LinearLayout row = (LinearLayout) view.getParent();
+        TextView list = (TextView) row.findViewById(R.id.list_child);
+
+        //Toast.makeText(getApplicationContext(), list.getText().toString(), Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(MainActivity.this, Share.class);
+        intent.putExtra(EXTRA_MESSAGE, list.getText().toString());
+        startActivity(intent);
     }
 }
 
