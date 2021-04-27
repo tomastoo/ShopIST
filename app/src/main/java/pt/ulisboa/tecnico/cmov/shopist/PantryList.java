@@ -85,7 +85,7 @@ public class PantryList extends AppCompatActivity {
     }
 
     private void setPantryItemList(){
-        pantryItemList = new ArrayList<>(pantryDAO.getAllItems(name));
+        //pantryItemList = new ArrayList<>(pantryDAO.getAllItems(name));
     }
 
     private void setArrayAdapter(){

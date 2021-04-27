@@ -23,6 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ShopIST">
         <activity android:name=".AddItemToPantry"></activity>
+        <activity android:name=".Share"></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -45,5 +46,6 @@
             </intent-filter>
         </activity>
     </application>
+
 
 </manifest>

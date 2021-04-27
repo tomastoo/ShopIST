@@ -96,14 +96,14 @@ public class ShoppingList extends AppCompatActivity {
         public StableAdapter(Context context, ShopDAO data) {
             // TODO Auto-generated constructor stub
             this.context = context;
-/*
-            for (ShopItem s : data.getAllItems() ) {
+
+            /*for (ShopItem s : data.getAllItems() ) {
                 shoppingItems.add(new ShoppingItem(s.name, String.valueOf(s.quantity), String.valueOf(s.price)));
             }
             inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-*/
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);*/
         }
+
         @Override
         public int getCount() {
             // TODO Auto-generated method stub
