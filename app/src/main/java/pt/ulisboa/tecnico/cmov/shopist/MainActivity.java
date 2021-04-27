@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmov.shopist;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ExpandableListView;
@@ -16,8 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import util.db.DatabaseShopIst;
-import util.db.entities.PantryList;
+import pt.ulisboa.tecnico.cmov.shopist.PantryList;
 import util.main.MainAdapter;
+import util.main.SharedClass;
 
 public class MainActivity extends AppCompatActivity implements DialogAdd.DialogAddListener, ExpandableListView.OnChildClickListener {
 
@@ -27,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
     List<String> listGroup;
     HashMap<String, List<String>> listItem;
     MainAdapter adapter;
+    SharedClass sc;
     DatabaseShopIst db;
     List<util.db.entities.PantryList> pantryLists;
 
@@ -37,14 +40,20 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        db = Room.databaseBuilder(getApplicationContext(), DatabaseShopIst.class, "db_name").allowMainThreadQueries().fallbackToDestructiveMigration().build();
+        sc = (SharedClass) getApplicationContext();
+        // so vamos criar uma conexao a base de dados se ela ainda nao estiver instanciada na Shared class
+        if(sc.dbShopIst == null)
+            sc.instanceDb();
+        db = sc.dbShopIst;
+
+
         expandableListView = findViewById(R.id.expand_activities_button);
         listGroup = new ArrayList<>();
         listItem = new HashMap<>();
         adapter = new MainAdapter(this, listGroup, listItem);
         expandableListView.setAdapter(adapter);
         expandableListView.setOnChildClickListener(this);
-        initListData();
+        AsyncTask.execute(this::initListData);
     }
 
     private void initListData() {
@@ -59,12 +68,13 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
             list1.add(item);
         }
 
-        List<util.db.entities.PantryList> lists_pantry = db.pantryListDAO().getAllPantryLists();
+        List<util.db.entities.Pantry> lists_pantry = db.pantryDAO().getAllPantryLists();
         List<String> list2 = new ArrayList<>();
         array = getResources().getStringArray(R.array.group2);
-        for(util.db.entities.PantryList item : lists_pantry){
+        for(util.db.entities.Pantry item : lists_pantry){
             list2.add(item.name);
         }
+
         list2.add("+");
 
         List<util.db.entities.ShoppingList> lists_shopping = db.shoppingListDAO().getAllShoppingLists();
@@ -96,17 +106,17 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
             case "Pantry Lists":
                 if (item.equals("+")){
                     new_list_type = "Pantry";
-                    openDialog();
+             //       openDialog();
                 } else {
-                    /*Intent intent = new Intent(MainActivity.this, PantryList.class);
+                    Intent intent = new Intent(MainActivity.this, PantryList.class);
                     intent.putExtra(EXTRA_MESSAGE, item);
-                    startActivity(intent);*/
+                    startActivity(intent);
                 }
                 break;
             case "Shopping Lists":
                 if (item.equals("+")){
                     new_list_type = "Shopping";
-                    openDialog();
+                   // openDialog();
                 } else {
                     /*Intent intent = new Intent(MainActivity.this, ShoppingList.class);
                     intent.putExtra(EXTRA_MESSAGE, item);
@@ -138,8 +148,8 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
                 adapter.notifyDataSetChanged();
                 break;
             case "Pantry":
-                PantryList pantryList = new PantryList(name);
-                db.pantryListDAO().insertPantryList(pantryList);
+              //  PantryList pantryList = new PantryList(name);
+               // db.pantryListDAO().insertPantryList(pantryList);
 
                 list = listItem.get(listGroup.get(1));
                 list.set((list.size()-1), name);

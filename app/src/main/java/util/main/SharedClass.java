@@ -8,13 +8,12 @@ import util.db.DatabaseShopIst;
 
 
 public class SharedClass extends Application {
-    public int teste=1;
-    public DatabaseShopIst dbShopIst;
+    public DatabaseShopIst dbShopIst = null;
 
     public SharedClass () {
     }
 
     public void instanceDb() {
-        dbShopIst =  Room.databaseBuilder(this, DatabaseShopIst.class, "shopIstDb").build();
+        dbShopIst =  Room.databaseBuilder(this, DatabaseShopIst.class, "shopIstDb").fallbackToDestructiveMigration().build();
     }
 }

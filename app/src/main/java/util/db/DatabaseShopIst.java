@@ -15,7 +15,7 @@ import util.db.queryInterfaces.PantryListDAO;
 import util.db.queryInterfaces.ShopDAO;
 import util.db.queryInterfaces.ShoppingListDAO;
 
-@Database(entities = {Item.class, Pantry.class, PantryList.class, ShoppingList.class}, version = 1)
+@Database(entities = {Item.class, Pantry.class, PantryList.class, ShoppingList.class}, version = 2)
 public abstract class DatabaseShopIst extends RoomDatabase {
     /*private static final String DB_NAME = "shop_ist";
     private static DatabaseShopIst instance;
@@ -24,7 +24,6 @@ public abstract class DatabaseShopIst extends RoomDatabase {
         if(instance == null){
             instance = Room.databaseBuilder(context.getApplicationContext(), DatabaseShopIst.class, DB_NAME).fallbackToDestructiveMigration().build();
         }
-
         return instance;
     }*/
 

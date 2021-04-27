@@ -17,7 +17,7 @@ public interface ShoppingListDAO {
     List<ShoppingList> getAllShoppingLists();
 
     @Query("SELECT * FROM shopping_list WHERE shopping_list.name = :listName")
-    PantryList getShoppingList(String listName);
+    ShoppingList getShoppingList(String listName);
 
     @Insert
     void insertShoppingList(ShoppingList shoppingList);

@@ -26,6 +26,9 @@ public interface PantryDAO {
  @Query("SELECT * FROM pantry WHERE pantry.name = :pantryName")
     Pantry getPantry(String pantryName);
 
+ @Query("SELECT * FROM pantry")
+    List<Pantry> getAllPantryLists();
+
  @Insert
     void insertItem(Item item);
 
