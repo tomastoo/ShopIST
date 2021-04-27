@@ -32,6 +32,7 @@ public class PantryList extends AppCompatActivity {
     private ArrayList<PantryItem> pantryItemList;
     private PantryListAdapter pantryListAdapter;
     private SharedClass sc;
+    private Pantry pantry;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +45,7 @@ public class PantryList extends AppCompatActivity {
         pantryDAO = sc.dbShopIst.pantryDAO();
 
         AsyncTask.execute(this::showItemList);
-        //AsyncTask.execute(this::setMap);
+        AsyncTask.execute(this::setMap);
 
         TextView textView = (TextView) findViewById(R.id.textView);
         textView.setText(name);
@@ -63,12 +64,14 @@ public class PantryList extends AppCompatActivity {
 
     private void openAddItemActivity(){
         Intent intent = new Intent(this, AddItemToPantry.class);
+        intent.putExtra("PantryId", pantry.id);
+        intent.putExtra("PantryName", pantry.name);
         startActivity(intent);
     }
 
     private void setMap(){
-        Pantry pantry = pantryDAO.getPantry(name);
-
+        pantry = pantryDAO.getPantry(name);
+        /*
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
@@ -76,7 +79,7 @@ public class PantryList extends AppCompatActivity {
         MapsFragment mapsFragment = new MapsFragment(pantry.latitude, pantry.longitude);
 
         transaction.replace(R.id.mapView, mapsFragment);
-        transaction.commit();
+        transaction.commit();*/
     }
 
     private void showItemList(){

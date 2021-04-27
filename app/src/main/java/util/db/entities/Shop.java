@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey;
 
 @Entity(indices = {@Index(value = "name", unique = true)})
 public class Shop {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     public int id;
 
     public float latitude;

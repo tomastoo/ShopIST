@@ -1,27 +1,22 @@
 package util.db.queryInterfaces;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
-import androidx.room.Delete;
-import androidx.room.Insert;
 import androidx.room.Query;
-import androidx.room.Update;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import util.db.entities.Item;
 import util.db.entities.Pantry;
-import util.db.entities.PantryList;
+import util.db.entities.PantryItem;
 
 @Dao
 public interface PantryDAO {
- @Query("SELECT item.name as name, pantry_list.quantity as quantity, pantry_list.stock as stock " +
-         "FROM item INNER JOIN pantry_list ON item.id = pantry_list.itemId " +
-         "INNER JOIN pantry ON pantry.id = pantry_list.pantryId " +
+ @Query("SELECT item.name as name, PantryItem.quantity as quantity, PantryItem.stock as stock " +
+         "FROM item INNER JOIN PantryItem ON item.id = PantryItem.itemId " +
+         "INNER JOIN pantry ON pantry.id = PantryItem.pantryId " +
          "WHERE pantry.name = :pantryName")
-    List<PantryItem> getAllItems(String pantryName);
+    List<util.db.queryInterfaces.PantryItem> getAllItems(String pantryName);
 
  @Query("SELECT * FROM pantry WHERE pantry.name = :pantryName")
     Pantry getPantry(String pantryName);
@@ -30,8 +25,8 @@ public interface PantryDAO {
     List<Pantry> getAllPantryLists();
 
  @Insert
-    void insertItem(Item item);
+    long insertItem(Item item);
 
  @Insert
-    void insertPantryList(PantryList pantryList);
+    void insertPantryList(PantryItem pantryItem);
 }

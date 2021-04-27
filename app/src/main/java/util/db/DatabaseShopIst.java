@@ -1,21 +1,18 @@
 package util.db;
 
-import android.content.Context;
-
 import androidx.room.Database;
-import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import util.db.entities.Item;
 import util.db.entities.Pantry;
-import util.db.entities.PantryList;
+import util.db.entities.PantryItem;
 import util.db.entities.ShoppingList;
 import util.db.queryInterfaces.PantryDAO;
 import util.db.queryInterfaces.PantryListDAO;
 import util.db.queryInterfaces.ShopDAO;
 import util.db.queryInterfaces.ShoppingListDAO;
 
-@Database(entities = {Item.class, Pantry.class, PantryList.class, ShoppingList.class}, version = 2)
+@Database(entities = {Item.class, Pantry.class, PantryItem.class, ShoppingList.class}, version = 1)
 public abstract class DatabaseShopIst extends RoomDatabase {
     /*private static final String DB_NAME = "shop_ist";
     private static DatabaseShopIst instance;

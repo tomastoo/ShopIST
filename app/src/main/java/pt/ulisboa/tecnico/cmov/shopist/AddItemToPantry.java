@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.cmov.shopist;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,7 +12,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
 
 import util.db.entities.Item;
-import util.db.entities.PantryList;
+import util.db.entities.PantryItem;
+import pt.ulisboa.tecnico.cmov.shopist.PantryList;
 import util.db.queryInterfaces.PantryDAO;
 import util.main.SharedClass;
 
@@ -24,14 +24,22 @@ public class AddItemToPantry extends AppCompatActivity {
     int stock;
     float price;
     String name;
+    long pantryId;
+    private String pantryName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item_to_pantry);
+        Intent intent = getIntent();
+        pantryId = intent.getLongExtra("PantryId", 0);
+        pantryName = intent.getStringExtra("PantryName");
+
+
         sc = (SharedClass)getApplicationContext();
         pantryDao = sc.dbShopIst.pantryDAO();
         handleScannerButton();
+        handleConfirmButton();
 
     }
 
@@ -70,22 +78,31 @@ public class AddItemToPantry extends AppCompatActivity {
                 price = Float.parseFloat(itemPrice.toString());
                 asyncInsert();
 
-
             }
         });
     }
 
     private void asyncInsert(){
         AsyncTask.execute(this::insertItem);
+        Intent intent = new Intent(this, PantryList.class);
+        intent.putExtra(MainActivity.EXTRA_MESSAGE, pantryName);
+        startActivity(intent);
     }
 
     private void insertItem(){
         Item item = new Item();
         item.name = name;
         item.price = price;
-        pantryDao.insertItem(item);
-        PantryList pantryList = new PantryList();
+        //TODO: e se o item ja existir?
+        long itemId = pantryDao.insertItem(item);
 
+        PantryItem pantryItem = new PantryItem();
+        pantryItem.itemId = (int)itemId;
+        pantryItem.pantryId = (int)pantryId;
+        pantryItem.quantity = quantity;
+        pantryItem.stock = stock;
+
+        pantryDao.insertPantryList(pantryItem);
     }
 
     private void handleScannerButton(){

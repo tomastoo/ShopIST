@@ -8,22 +8,22 @@ import androidx.room.Update;
 
 import java.util.List;
 
-import util.db.entities.PantryList;
+import util.db.entities.PantryItem;
 
 @Dao
 public interface PantryListDAO {
-    @Query("SELECT * FROM pantry_list")
-    List<PantryList> getAllPantryLists();
-
+    @Query("SELECT * FROM PantryItem")
+    List<PantryItem> getAllPantryLists();
+/*
     @Query("SELECT * FROM pantry_list WHERE pantry_list.name = :listName")
     PantryList getPantryList(String listName);
-
+*/
     @Insert
-    void insertPantryList(PantryList pantryList);
+    void insertPantryList(PantryItem pantryItem);
 
     @Update
-    void updatePantryList(PantryList pantryList);
+    void updatePantryList(PantryItem pantryItem);
 
     @Delete
-    void deletePantryList(PantryList pantryList);
+    void deletePantryList(PantryItem pantryItem);
 }

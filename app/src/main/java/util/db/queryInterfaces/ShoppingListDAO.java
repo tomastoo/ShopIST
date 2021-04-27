@@ -8,7 +8,6 @@ import androidx.room.Update;
 
 import java.util.List;
 
-import util.db.entities.PantryList;
 import util.db.entities.ShoppingList;
 
 @Dao

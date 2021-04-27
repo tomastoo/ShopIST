@@ -10,14 +10,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.Room;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import util.db.DatabaseShopIst;
-import pt.ulisboa.tecnico.cmov.shopist.PantryList;
+import util.db.entities.PantryItem;
 import util.main.MainAdapter;
 import util.main.SharedClass;
 
@@ -31,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
     MainAdapter adapter;
     SharedClass sc;
     DatabaseShopIst db;
-    List<util.db.entities.PantryList> pantryLists;
+    List<PantryItem> pantryItems;
 
     // Global Variables
     String new_list_type;
@@ -88,7 +87,13 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
         listItem.put(listGroup.get(0), list1);
         listItem.put(listGroup.get(1), list2);
         listItem.put(listGroup.get(2), list3);
-        adapter.notifyDataSetChanged();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // Stuff that updates the UI
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override

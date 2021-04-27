@@ -11,7 +11,7 @@ import androidx.room.PrimaryKey;
         @ForeignKey(entity = Item.class, parentColumns = "id", childColumns = "itemId")
 })
 public class ShopItems {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     public int id;
 
     @ColumnInfo(index = true)
