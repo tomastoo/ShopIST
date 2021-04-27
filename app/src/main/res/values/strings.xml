@@ -3,6 +3,7 @@
     <string name="group1">Menu</string>
     <string name="group2">Pantry Lists</string>
     <string name="group3">Shopping Lists</string>
+    <string name="addItem">Add Item To Pantry List</string>
 
     <string-array name="group1">
         <item>Profile</item>

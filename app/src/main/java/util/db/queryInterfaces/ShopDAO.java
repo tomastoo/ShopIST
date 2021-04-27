@@ -9,7 +9,7 @@ import util.db.entities.Pantry;
 
 @Dao
 public interface ShopDAO {
- @Query("SELECT item.name as name, pantry_list.quantity as quantity, pantry_list.stock as stock " +
+/* @Query("SELECT item.name as name, pantry_list.quantity as quantity, pantry_list.stock as stock " +
          "FROM item INNER JOIN pantry_list ON item.id = pantry_list.itemId " +
          "INNER JOIN pantry ON pantry.id = pantry_list.pantryId " +
          "WHERE pantry.name = :shopName")
@@ -17,4 +17,6 @@ public interface ShopDAO {
 
  @Query("SELECT * FROM Shop WHERE shop.name = :shopName")
     Pantry getShop(String shopName);
+
+ */
 }

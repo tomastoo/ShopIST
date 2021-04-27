@@ -9,7 +9,7 @@ import util.db.entities.PantryList;
 import util.db.queryInterfaces.PantryDAO;
 import util.db.queryInterfaces.ShopDAO;
 
-@Database(entities = {Item.class, Pantry.class, PantryList.class}, version = 2)
+@Database(entities = {Item.class, Pantry.class, PantryList.class}, version = 1)
 public abstract class DatabaseShopIst extends RoomDatabase {
     public abstract PantryDAO pantryDAO();
     public abstract ShopDAO shopDAO();

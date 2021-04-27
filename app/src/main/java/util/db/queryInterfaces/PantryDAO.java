@@ -2,6 +2,7 @@ package util.db.queryInterfaces;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Insert;
 import androidx.room.Query;
 
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.List;
 
 import util.db.entities.Item;
 import util.db.entities.Pantry;
+import util.db.entities.PantryList;
 
 @Dao
 public interface PantryDAO {
@@ -20,4 +22,10 @@ public interface PantryDAO {
 
  @Query("SELECT * FROM pantry WHERE pantry.name = :pantryName")
     Pantry getPantry(String pantryName);
+
+ @Insert
+    void insertItem(Item item);
+
+ @Insert
+    void insertPantryList(PantryList pantryList);
 }

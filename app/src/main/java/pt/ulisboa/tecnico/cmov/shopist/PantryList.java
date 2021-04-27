@@ -6,11 +6,14 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +44,26 @@ public class PantryList extends AppCompatActivity {
         pantryDAO = sc.dbShopIst.pantryDAO();
 
         AsyncTask.execute(this::showItemList);
-        AsyncTask.execute(this::setMap);
+        //AsyncTask.execute(this::setMap);
 
         TextView textView = (TextView) findViewById(R.id.textView);
         textView.setText(name);
+        handleNewItemButton();
+
+    }
+    private void handleNewItemButton(){
+        FloatingActionButton newItemBtn = (FloatingActionButton) findViewById(R.id.floatingActionButton);
+        newItemBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openAddItemActivity();
+            }
+        });
+    }
+
+    private void openAddItemActivity(){
+        Intent intent = new Intent(this, AddItemToPantry.class);
+        startActivity(intent);
     }
 
     private void setMap(){
