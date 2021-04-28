@@ -7,6 +7,13 @@ import androidx.room.PrimaryKey;
 
 @Entity(indices = {@Index(value = "name", unique = true)})
 public class Pantry {
+
+    public Pantry (float latitude, float longitude, String name){
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.name = name;
+    }
+
     @PrimaryKey(autoGenerate = true)
     public int id;
 

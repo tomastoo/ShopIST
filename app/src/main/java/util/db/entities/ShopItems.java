@@ -11,6 +11,11 @@ import androidx.room.PrimaryKey;
         @ForeignKey(entity = Item.class, parentColumns = "id", childColumns = "itemId")
 })
 public class ShopItems {
+    public ShopItems (int shopId,int itemId, int quantity) {
+        this.itemId = itemId;
+        this.shopId = shopId;
+        this.quantity = quantity;
+    }
     @PrimaryKey(autoGenerate = true)
     public int id;
 
@@ -21,5 +26,4 @@ public class ShopItems {
     public int itemId;
 
     public int quantity;
-    public int price;
 }

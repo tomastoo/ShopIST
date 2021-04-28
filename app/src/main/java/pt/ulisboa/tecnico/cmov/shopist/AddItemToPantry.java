@@ -90,17 +90,11 @@ public class AddItemToPantry extends AppCompatActivity {
     }
 
     private void insertItem(){
-        Item item = new Item();
-        item.name = name;
-        item.price = price;
+        Item item = new Item(name, price);
         //TODO: e se o item ja existir?
         long itemId = pantryDao.insertItem(item);
 
-        PantryItem pantryItem = new PantryItem();
-        pantryItem.itemId = (int)itemId;
-        pantryItem.pantryId = (int)pantryId;
-        pantryItem.quantity = quantity;
-        pantryItem.stock = stock;
+        PantryItem pantryItem = new PantryItem((int)itemId, (int)pantryId, quantity, stock);
 
         pantryDao.insertPantryList(pantryItem);
     }

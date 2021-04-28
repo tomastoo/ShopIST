@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.cmov.shopist;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
         expandableListView.setAdapter(adapter);
         expandableListView.setOnChildClickListener(this);
         AsyncTask.execute(this::initListData);
+        AsyncTask.execute(Database::fillDatabase);
     }
 
     private void initListData() {

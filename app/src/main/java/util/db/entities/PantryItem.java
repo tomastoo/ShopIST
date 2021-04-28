@@ -16,6 +16,12 @@ import util.db.entities.Pantry;
         @ForeignKey(entity = Item.class, parentColumns = "id", childColumns = "itemId")
 })
 public class PantryItem {
+    public PantryItem (int pantryId,int itemId, int quantity, int stock) {
+        this.itemId = itemId;
+        this.pantryId = pantryId;
+        this.quantity = quantity;
+        this.stock = stock;
+    }
     @PrimaryKey(autoGenerate = true)
     public long id;
 

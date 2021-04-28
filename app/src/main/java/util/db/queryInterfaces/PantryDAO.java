@@ -24,9 +24,20 @@ public interface PantryDAO {
  @Query("SELECT * FROM pantry")
     List<Pantry> getAllPantryLists();
 
+
+ @Query("DELETE FROM item")
+    void nukeItems();
+ @Query("DELETE FROM pantry")
+    void nukePantries();
+ @Query("DELETE FROM PantryItem")
+    void nukePantryItems();
+
  @Insert
     long insertItem(Item item);
 
  @Insert
     void insertPantryList(PantryItem pantryItem);
+
+ @Insert
+    long insertPantry(Pantry pantry);
 }

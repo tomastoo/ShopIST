@@ -8,7 +8,7 @@ import util.db.DatabaseShopIst;
 
 
 public class SharedClass extends Application {
-    public DatabaseShopIst dbShopIst = null;
+    public static DatabaseShopIst dbShopIst = null;
 
     public SharedClass () {
     }
