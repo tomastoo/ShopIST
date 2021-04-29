@@ -3,7 +3,6 @@ package pt.ulisboa.tecnico.cmov.shopist;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
@@ -17,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import util.db.DatabaseShopIst;
+import util.db.entities.Pantry;
 import util.db.entities.PantryItem;
 import util.main.MainAdapter;
 import util.main.SharedClass;
@@ -62,33 +62,46 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
         listGroup.add(getString(R.string.group2));
         listGroup.add(getString(R.string.group3));
 
-        String[] array;
-        List<String> list1 = new ArrayList<>();
+        /*String[] array;
+        /*List<String> list1 = new ArrayList<>();
         array = getResources().getStringArray(R.array.group1);
         for(String item : array){
             list1.add(item);
-        }
+        }*/
+        AsyncTask.execute(() -> {
+            String[] array;
+            List<String> list1 = new ArrayList<>();
+            array = getResources().getStringArray(R.array.group1);
+            for(String item : array){
+                list1.add(item);
+            }
+            listItem.put(listGroup.get(0), list1);
+        });
 
-        List<util.db.entities.Pantry> lists_pantry = db.pantryDAO().getAllPantryLists();
-        List<String> list2 = new ArrayList<>();
-        array = getResources().getStringArray(R.array.group2);
-        for(util.db.entities.Pantry item : lists_pantry){
-            list2.add(item.name);
-        }
+        AsyncTask.execute(() -> {
+            List<util.db.entities.Pantry> lists_pantry = db.pantryDAO().getAllPantryLists();
+            List<String> list2 = new ArrayList<>();
+            for(util.db.entities.Pantry item : lists_pantry){
+                list2.add(item.name);
+            }
 
-        list2.add("+");
+            list2.add("+");
+            listItem.put(listGroup.get(1), list2);
+        });
 
-        List<util.db.entities.ShoppingList> lists_shopping = db.shoppingListDAO().getAllShoppingLists();
-        List<String> list3 = new ArrayList<>();
-        array = getResources().getStringArray(R.array.group3);
-        for(util.db.entities.ShoppingList item : lists_shopping){
-            list3.add(item.name);
-        }
-        list3.add("+");
+        AsyncTask.execute(() -> {
+            List<util.db.entities.ShoppingList> lists_shopping = db.shoppingListDAO().getAllShoppingLists();
+            List<String> list3 = new ArrayList<>();
+            for(util.db.entities.ShoppingList item : lists_shopping){
+                list3.add(item.name);
+            }
+            list3.add("+");
+            listItem.put(listGroup.get(2), list3);
+        });
 
-        listItem.put(listGroup.get(0), list1);
+        /*listItem.put(listGroup.get(0), list1);
         listItem.put(listGroup.get(1), list2);
-        listItem.put(listGroup.get(2), list3);
+        listItem.put(listGroup.get(2), list3);*/
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -113,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
             case "Pantry Lists":
                 if (item.equals("+")){
                     new_list_type = "Pantry";
-             //       openDialog();
+                    openDialog();
                 } else {
                     Intent intent = new Intent(MainActivity.this, PantryList.class);
                     intent.putExtra(EXTRA_MESSAGE, item);
@@ -123,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
             case "Shopping Lists":
                 if (item.equals("+")){
                     new_list_type = "Shopping";
-                   // openDialog();
+                    openDialog();
                 } else {
                     /*Intent intent = new Intent(MainActivity.this, ShoppingList.class);
                     intent.putExtra(EXTRA_MESSAGE, item);
@@ -155,6 +168,8 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
                 adapter.notifyDataSetChanged();
                 break;
             case "Pantry":
+                Pantry pantry = new Pantry(name);
+                AsyncTask.execute(() -> db.pantryDAO().insertPantry(pantry));
               //  PantryList pantryList = new PantryList(name);
                // db.pantryListDAO().insertPantryList(pantryList);
 

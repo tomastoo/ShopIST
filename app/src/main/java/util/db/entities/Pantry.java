@@ -14,6 +14,11 @@ public class Pantry {
         this.name = name;
     }
 
+    @Ignore
+    public Pantry (String name){
+        this.name = name;
+    }
+
     @PrimaryKey(autoGenerate = true)
     public int id;
 

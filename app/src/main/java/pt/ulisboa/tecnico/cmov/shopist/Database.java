@@ -1,13 +1,10 @@
 package pt.ulisboa.tecnico.cmov.shopist;
 
-import androidx.room.ColumnInfo;
-
 import util.db.entities.Item;
 import util.db.entities.Pantry;
 import util.db.entities.PantryItem;
 import util.db.entities.Shop;
 import util.db.entities.ShopItems;
-import util.db.queryInterfaces.ShopItem;
 import util.main.SharedClass;
 
 public class Database {
@@ -74,11 +71,11 @@ public class Database {
     }
 
     private static void clearDatabase(SharedClass sharedClass) {
-        sharedClass.dbShopIst.pantryDAO().nukeItems();
-        sharedClass.dbShopIst.pantryDAO().nukePantries();
         sharedClass.dbShopIst.pantryDAO().nukePantryItems();
-        sharedClass.dbShopIst.shopDAO().nukeShops();
         sharedClass.dbShopIst.shopDAO().nukeShopItems();
+        sharedClass.dbShopIst.shopDAO().nukeShops();
+        sharedClass.dbShopIst.pantryDAO().nukePantries();
+        sharedClass.dbShopIst.pantryDAO().nukeItems();
 
     }
 
