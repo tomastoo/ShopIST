@@ -16,8 +16,11 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONObject;
 
 import java.util.concurrent.TimeUnit;
 
@@ -25,12 +28,15 @@ import static androidx.work.PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS;
 
 
 public class ServerInterface {
-
-    Context _context;
-    String serverUrl ="https://localhost:8090/";
+    private static ServerInterface instance;
+    private RequestQueue requestQueue;
+    private static Context _context;
+    //https://localhost:8080/api/v1/pantries
+    String serverUrl ="http://localhost:8080/";
 
     public ServerInterface(Context context) {
         _context = context;
+        /*
         PeriodicWorkRequest updateShopsWorkRequest =
                 new PeriodicWorkRequest.Builder(UpdateShopsWorker.class,MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS)
                         .build();
@@ -38,24 +44,37 @@ public class ServerInterface {
                 "updateShops",
                 ExistingPeriodicWorkPolicy.KEEP,
                 updateShopsWorkRequest);
+         */
+    }
+
+    public static synchronized ServerInterface getInstance(Context context) {
+        if (instance == null) {
+            instance = new ServerInterface(context);
+        }
+        return instance;
     }
 
     public void updateShops(){
-        // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(_context);
-        String url = serverUrl;
+        String url = serverUrl + "api/v1/pantries";
 
-// Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                response -> {
-                    // Display the first 500 characters of the response string.
-                    Log.println(Log.DEBUG,"Debug","Response is: " + response.substring(0, 500));
-                }, error -> {
-                    //KABOOOM
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.println(Log.DEBUG,"Debug","Response is: " + response.toString());
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+
+                    }
                 });
 
-// Add the request to the RequestQueue.
-        queue.add(stringRequest);
+// Access the RequestQueue through your singleton class.
+        ServerInterface.getInstance(_context).addToRequestQueue(jsonObjectRequest);
 
     }
 
@@ -73,8 +92,19 @@ public class ServerInterface {
 
     }
 
+    public RequestQueue getRequestQueue() {
+        if (requestQueue == null) {
+            // getApplicationContext() is key, it keeps you from leaking the
+            // Activity or BroadcastReceiver if someone passes one in.
+            requestQueue = Volley.newRequestQueue(_context.getApplicationContext());
+        }
+        return requestQueue;
+    }
 
 
+    public <T> void addToRequestQueue(Request<T> req) {
+        getRequestQueue().add(req);
+    }
 
     public class UpdateShopsWorker extends Worker {
         public UpdateShopsWorker(
