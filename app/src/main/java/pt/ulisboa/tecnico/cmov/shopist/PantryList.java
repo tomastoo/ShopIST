@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -70,16 +71,12 @@ public class PantryList extends AppCompatActivity {
     }
 
     private void setMap(){
-        pantry = pantryDAO.getPantry(name);
-        /*
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-
+        Log.w("PANTRY_LAT_LON", "latitude = " + pantry.latitude + " longitude = " + pantry.longitude);
         MapsFragment mapsFragment = new MapsFragment(pantry.latitude, pantry.longitude);
-
         transaction.replace(R.id.mapView, mapsFragment);
-        transaction.commit();*/
+        transaction.commit();
     }
 
     private void showItemList(){

@@ -31,8 +31,8 @@ public class Database {
 
 
         long[] pantryIds = new long[] {
-                sharedClass.dbShopIst.pantryDAO().insertPantry(new Pantry(00001, 000002, "Taguspark")),
-                sharedClass.dbShopIst.pantryDAO().insertPantry(new Pantry(00002, 000001, "Alameda"))
+                sharedClass.dbShopIst.pantryDAO().insertPantry(new Pantry(38.73752054599338, -9.30328335632761, "Taguspark")),
+                sharedClass.dbShopIst.pantryDAO().insertPantry(new Pantry(38.737020040649575, 38.737020040649575, "Alameda"))
         };
 
         sharedClass.dbShopIst.pantryDAO().insertPantryList( new PantryItem((int)pantryIds[0], (int)itemIds[0],1, 2));
@@ -74,8 +74,8 @@ public class Database {
         sharedClass.dbShopIst.pantryDAO().nukePantryItems();
         sharedClass.dbShopIst.shopDAO().nukeShopItems();
         sharedClass.dbShopIst.shopDAO().nukeShops();
-        sharedClass.dbShopIst.pantryDAO().nukePantries();
         sharedClass.dbShopIst.pantryDAO().nukeItems();
+        sharedClass.dbShopIst.pantryDAO().nukePantries();
 
     }
 

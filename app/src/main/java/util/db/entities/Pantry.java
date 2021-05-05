@@ -5,10 +5,10 @@ import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(indices = {@Index(value = "name", unique = true)})
+@Entity
 public class Pantry {
 
-    public Pantry (float latitude, float longitude, String name){
+    public Pantry (double latitude, double longitude, String name){
         this.latitude = latitude;
         this.longitude = longitude;
         this.name = name;
@@ -22,7 +22,7 @@ public class Pantry {
     @PrimaryKey(autoGenerate = true)
     public int id;
 
-    public float latitude;
-    public float longitude;
+    public double latitude;
+    public double longitude;
     public String name;
 }
