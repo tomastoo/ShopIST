@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
         if(sc.dbShopIst == null)
             sc.instanceDb();
         db = sc.dbShopIst;
-
+        sc.instanceServerCommunication();
 
         expandableListView = findViewById(R.id.expand_activities_button);
         listGroup = new ArrayList<>();

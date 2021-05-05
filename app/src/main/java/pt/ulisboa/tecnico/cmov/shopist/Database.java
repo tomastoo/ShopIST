@@ -42,10 +42,7 @@ public class Database {
         sharedClass.dbShopIst.pantryDAO().insertPantryList( new PantryItem((int)pantryIds[0], (int)itemIds[4],2 , 0));
         sharedClass.dbShopIst.pantryDAO().insertPantryList( new PantryItem((int)pantryIds[0], (int)itemIds[5],3 , 0));
         sharedClass.dbShopIst.pantryDAO().insertPantryList( new PantryItem((int)pantryIds[1], (int)itemIds[6],1 , 0));
-        sharedClass.dbShopIst.pantryDAO().insertPantryList( new PantryItem((int)pantryIds[1], (int)itemIds[7],3 , 0));
         sharedClass.dbShopIst.pantryDAO().insertPantryList( new PantryItem((int)pantryIds[1], (int)itemIds[8],2 , 0));
-        sharedClass.dbShopIst.pantryDAO().insertPantryList( new PantryItem((int)pantryIds[1], (int)itemIds[3],5 , 0));
-        sharedClass.dbShopIst.pantryDAO().insertPantryList( new PantryItem((int)pantryIds[1], (int)itemIds[0],2 , 0));
         sharedClass.dbShopIst.pantryDAO().insertPantryList( new PantryItem((int)pantryIds[1],(int)itemIds[1],4 , 0));
 
 
