@@ -12,16 +12,20 @@ import androidx.work.WorkRequest;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.concurrent.TimeUnit;
 
 import static androidx.work.PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS;
@@ -32,7 +36,7 @@ public class ServerInterface {
     private RequestQueue requestQueue;
     private static Context _context;
     //https://localhost:8080/api/v1/pantries
-    String serverUrl ="http://localhost:8080/";
+    String serverUrl ="http://10.0.2.2:8080/";
 
     public ServerInterface(Context context) {
         _context = context;
@@ -54,21 +58,30 @@ public class ServerInterface {
         return instance;
     }
 
-    public void updateShops(){
+    public void getPantries(){
         String url = serverUrl + "api/v1/pantries";
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+        // Request a string response from the provided URL.
+        JsonArrayRequest jsonObjectRequest = new JsonArrayRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
 
                     @Override
-                    public void onResponse(JSONObject response) {
-                        Log.println(Log.DEBUG,"Debug","Response is: " + response.toString());
+                    public void onResponse(JSONArray response) {
+                        Log.d("Debug","Response is: " + response.toString());
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO: Handle error
+                        NetworkResponse errorRes = error.networkResponse;
+                        String stringData = "";
+                        if(errorRes != null && errorRes.data != null){
+                            try {
+                                stringData = new String(errorRes.data,"UTF-8");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        Log.e("Error",error.toString());
 
                     }
                 });
@@ -117,7 +130,7 @@ public class ServerInterface {
         public Result doWork() {
 
             // Do the work here--in this case, upload the images.
-            updateShops();
+            //updateShops();
 
             // Indicate whether the work finished successfully with the Result
             return Result.success();

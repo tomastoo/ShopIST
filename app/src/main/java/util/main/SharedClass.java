@@ -20,6 +20,6 @@ public class SharedClass extends Application {
 
     public void instanceServerCommunication() {
 
-        ServerInterface.getInstance(this).updateShops();
+        ServerInterface.getInstance(this).getPantries();
     }
 }
