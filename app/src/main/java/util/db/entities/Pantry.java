@@ -1,5 +1,6 @@
 package util.db.entities;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.Index;
@@ -25,4 +26,5 @@ public class Pantry {
     public double latitude;
     public double longitude;
     public String name;
+    
 }

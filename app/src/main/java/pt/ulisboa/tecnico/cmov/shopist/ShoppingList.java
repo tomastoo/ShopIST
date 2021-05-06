@@ -5,25 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
-import util.db.queryInterfaces.ShopDAO;
-import util.db.queryInterfaces.ShopItem;
 import util.main.SharedClass;
 
 public class ShoppingList extends AppCompatActivity {
@@ -32,10 +23,10 @@ public class ShoppingList extends AppCompatActivity {
     private void fillList() {
         ListView listView =  findViewById(R.id.ListViewShoppingList);
 
-        ShopDAO shopDAO = sharedClass.dbShopIst.shopDAO();
+        //ShopDAO shopDAO = sharedClass.dbShopIst.shopDAO();
 
-        final StableAdapter adapter = new StableAdapter(this, shopDAO);
-        listView.setAdapter(adapter);
+       // final StableAdapter adapter = new StableAdapter(this, shopDAO);
+        //listView.setAdapter(adapter);
 
        /* listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -93,16 +84,20 @@ public class ShoppingList extends AppCompatActivity {
         ArrayList<ShoppingItem> shoppingItems = new ArrayList<>();
         private LayoutInflater inflater = null;
 
+/*
         public StableAdapter(Context context, ShopDAO data) {
             // TODO Auto-generated constructor stub
             this.context = context;
 
-            /*for (ShopItem s : data.getAllItems() ) {
+            */
+/*for (ShopItem s : data.getAllItems() ) {
                 shoppingItems.add(new ShoppingItem(s.name, String.valueOf(s.quantity), String.valueOf(s.price)));
             }
             inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);*/
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);*//*
+
         }
+*/
 
         @Override
         public int getCount() {

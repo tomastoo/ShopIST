@@ -6,15 +6,13 @@ import androidx.room.Query;
 
 import java.util.List;
 
-import util.db.entities.Item;
 import util.db.entities.Pantry;
 import util.db.entities.PantryItem;
 
 @Dao
 public interface PantryDAO {
- @Query("SELECT item.name as name, PantryItem.quantity as quantity, PantryItem.stock as stock " +
-         "FROM item INNER JOIN PantryItem ON item.id = PantryItem.itemId " +
-         "INNER JOIN pantry ON pantry.id = PantryItem.pantryId " +
+ @Query("SELECT pantryitem.name as name, pantryitem.quantity as quantity, pantryitem.stock as stock " +
+         "FROM pantry INNER JOIN pantryitem ON pantry.id = pantryitem.pantryId " +
          "WHERE pantry.name = :pantryName")
     List<util.db.queryInterfaces.PantryItem> getAllItems(String pantryName);
 
@@ -24,16 +22,11 @@ public interface PantryDAO {
  @Query("SELECT * FROM pantry")
     List<Pantry> getAllPantryLists();
 
-
- @Query("DELETE FROM item")
-    void nukeItems();
  @Query("DELETE FROM pantry")
     void nukePantries();
+
  @Query("DELETE FROM PantryItem")
     void nukePantryItems();
-
- @Insert
-    long insertItem(Item item);
 
  @Insert
     void insertPantryList(PantryItem pantryItem);

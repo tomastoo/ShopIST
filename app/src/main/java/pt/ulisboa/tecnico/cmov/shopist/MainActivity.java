@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
         expandableListView.setAdapter(adapter);
         expandableListView.setOnChildClickListener(this);
         AsyncTask.execute(this::initListData);
-        AsyncTask.execute(Database::fillDatabase);
+        //AsyncTask.execute(Database::fillDatabase);
     }
 
     private void initListData() {
@@ -90,11 +90,13 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
         });
 
         AsyncTask.execute(() -> {
-            List<util.db.entities.ShoppingList> lists_shopping = db.shoppingListDAO().getAllShoppingLists();
             List<String> list3 = new ArrayList<>();
+/*
+            List<util.db.entities.ShoppingList> lists_shopping = db.shoppingListDAO().getAllShoppingLists();
             for(util.db.entities.ShoppingList item : lists_shopping){
                 list3.add(item.name);
             }
+*/
             list3.add("+");
             listItem.put(listGroup.get(2), list3);
         });
@@ -157,8 +159,10 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
         List<String> list;
         switch (new_list_type){
             case "Shopping":
+/*
                 util.db.entities.ShoppingList shoppingList = new util.db.entities.ShoppingList(name);
                 db.shoppingListDAO().insertShoppingList(shoppingList);
+*/
 
                 list = listItem.get(listGroup.get(2));
                 list.set((list.size()-1), name);

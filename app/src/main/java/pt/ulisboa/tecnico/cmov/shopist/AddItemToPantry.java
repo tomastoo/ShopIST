@@ -11,9 +11,7 @@ import android.view.View;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
 
-import util.db.entities.Item;
 import util.db.entities.PantryItem;
-import pt.ulisboa.tecnico.cmov.shopist.PantryList;
 import util.db.queryInterfaces.PantryDAO;
 import util.main.SharedClass;
 
@@ -90,13 +88,6 @@ public class AddItemToPantry extends AppCompatActivity {
     }
 
     private void insertItem(){
-        Item item = new Item(name, price);
-        //TODO: e se o item ja existir?
-        long itemId = pantryDao.insertItem(item);
-
-        PantryItem pantryItem = new PantryItem((int)itemId, (int)pantryId, quantity, stock);
-
-        pantryDao.insertPantryList(pantryItem);
     }
 
     private void handleScannerButton(){

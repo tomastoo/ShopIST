@@ -3,33 +3,37 @@ package util.db.entities;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
-import androidx.room.Ignore;
-import androidx.room.Index;
 import androidx.room.PrimaryKey;
-
-import util.db.entities.Item;
-import util.db.entities.Pantry;
 
 @Entity(
         foreignKeys = {
         @ForeignKey(entity = Pantry.class, parentColumns = "id" , childColumns = "pantryId"),
-        @ForeignKey(entity = Item.class, parentColumns = "id", childColumns = "itemId")
+        @ForeignKey(entity = Shop.class, parentColumns = "id", childColumns = "shopId")
 })
 public class PantryItem {
-    public PantryItem (int pantryId,int itemId, int quantity, int stock) {
-        this.itemId = itemId;
+    public PantryItem (int pantryId, int shopId, int quantity, int stock , String name, float price) {
+        this.shopId = shopId;
         this.pantryId = pantryId;
         this.quantity = quantity;
         this.stock = stock;
+        this.name = name;
+        this.price = price;
     }
+
     @PrimaryKey(autoGenerate = true)
     public long id;
+
+    public String name;
+
+    public float price;
+
+    public String barcode;
 
     @ColumnInfo(index = true)
     public int pantryId;
 
     @ColumnInfo(index = true)
-    public int itemId;
+    public int shopId;
 
     @ColumnInfo(name = "quantity")
     public int quantity;
@@ -37,4 +41,6 @@ public class PantryItem {
     @ColumnInfo(name = "stock")
     public int stock;
 
+    @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
+    public String time_stamp;
 }
