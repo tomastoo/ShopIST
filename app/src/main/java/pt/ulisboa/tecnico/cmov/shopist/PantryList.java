@@ -43,7 +43,7 @@ public class PantryList extends AppCompatActivity {
         Intent intent = getIntent();
         name = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
 
-        pantryDAO = sc.dbShopIst.pantryDAO();
+        pantryDAO = sc.instanceDb().pantryDAO();
 
         AsyncTask.execute(this::showItemList);
         AsyncTask.execute(this::setMap);

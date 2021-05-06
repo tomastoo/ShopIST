@@ -24,14 +24,18 @@ import util.main.SharedClass;
 public class MainActivity extends AppCompatActivity implements DialogAdd.DialogAddListener, ExpandableListView.OnChildClickListener {
 
     public static final String EXTRA_MESSAGE = "pt.ulisboa.tecnico.cmov.shopist.MESSAGE";
+
+    private static MainActivity instance;
     // Main Activity Options
     ExpandableListView expandableListView;
     List<String> listGroup;
     HashMap<String, List<String>> listItem;
     MainAdapter adapter;
+    List<PantryItem> pantryItems;
+
+    //db stuff
     SharedClass sc;
     DatabaseShopIst db;
-    List<PantryItem> pantryItems;
 
     // Global Variables
     String new_list_type;
@@ -40,12 +44,11 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        sc = (SharedClass) getApplicationContext();
-        // so vamos criar uma conexao a base de dados se ela ainda nao estiver instanciada na Shared class
-        if(sc.dbShopIst == null)
-            sc.instanceDb();
-        db = sc.dbShopIst;
-        sc.instanceServerCommunication();
+        instance = this;
+        sc = (SharedClass)getApplicationContext();
+
+        db = sc.instanceDb();
+
 
         expandableListView = findViewById(R.id.expand_activities_button);
         listGroup = new ArrayList<>();
@@ -53,11 +56,20 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
         adapter = new MainAdapter(this, listGroup, listItem);
         expandableListView.setAdapter(adapter);
         expandableListView.setOnChildClickListener(this);
-        AsyncTask.execute(this::initListData);
-        //AsyncTask.execute(Database::fillDatabase);
+        //AsyncTask.execute(this::updateLocalDB);
+        sc.updateLocalDB();
+        //AsyncTask.execute(this::initListData);
+       //AsyncTask.execute(Database::fillDatabase);
     }
 
-    private void initListData() {
+    public static MainActivity getInstance(){
+        return instance;
+    }
+
+    public void initListData() {
+        //update PantryList before making queries to de local DB
+
+
         listGroup.add(getString(R.string.group1));
         listGroup.add(getString(R.string.group2));
         listGroup.add(getString(R.string.group3));

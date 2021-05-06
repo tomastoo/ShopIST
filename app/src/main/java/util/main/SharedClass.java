@@ -9,17 +9,20 @@ import util.db.DatabaseShopIst;
 
 
 public class SharedClass extends Application {
-    public static DatabaseShopIst dbShopIst = null;
-    public static ServerInterface serverInterface = null;
+    private static SharedClass sharedClass;
+    private static DatabaseShopIst dbShopIst = null;
+
     public SharedClass () {
     }
 
-    public void instanceDb() {
-        dbShopIst =  Room.databaseBuilder(this, DatabaseShopIst.class, "shopIstDb").fallbackToDestructiveMigration().build();
+    public DatabaseShopIst instanceDb() {
+        if(dbShopIst == null) {
+            dbShopIst = Room.databaseBuilder(this, DatabaseShopIst.class, "shopIstDb").fallbackToDestructiveMigration().build();
+            //this.updateLocalDB();
+        }
+        return dbShopIst;
     }
-
-    public void instanceServerCommunication() {
-
+    public void updateLocalDB() {
         ServerInterface.getInstance(this).getPantries();
     }
 }

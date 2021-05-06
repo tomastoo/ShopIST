@@ -1,16 +1,22 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 8,
-    "identityHash": "58e2448524be716e8ce0629d03afaee9",
+    "version": 2,
+    "identityHash": "5e1b02b5e51c332930dd5739d7ea6545",
     "entities": [
       {
         "tableName": "Pantry",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `name` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `server_id` INTEGER NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `name` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "server_id",
+            "columnName": "server_id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -153,11 +159,17 @@
       },
       {
         "tableName": "Shop",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `name` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `server_id` INTEGER NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `name` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "server_id",
+            "columnName": "server_id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -202,7 +214,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '58e2448524be716e8ce0629d03afaee9')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5e1b02b5e51c332930dd5739d7ea6545')"
     ]
   }
 }

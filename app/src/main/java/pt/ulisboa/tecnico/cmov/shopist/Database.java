@@ -7,13 +7,13 @@ import util.main.SharedClass;
 
 public class Database {
 
-    public static void fillDatabase(){
+/*    public static void fillDatabase(){
         SharedClass sharedClass = new SharedClass();
         if (sharedClass.dbShopIst == null) sharedClass.instanceDb();
         //clearDatabase(sharedClass);
 
     }
-
+*/
 /*    private static void fillItems(SharedClass sharedClass){
         long[] itemIds= new long[]{
             sharedClass.dbShopIst.pantryDAO().insertItem(new Item ( "pao", 0.9f)),

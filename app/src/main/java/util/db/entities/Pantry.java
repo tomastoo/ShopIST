@@ -9,10 +9,11 @@ import androidx.room.PrimaryKey;
 @Entity
 public class Pantry {
 
-    public Pantry (double latitude, double longitude, String name){
+    public Pantry (double latitude, double longitude, String name, long server_id){
         this.latitude = latitude;
         this.longitude = longitude;
         this.name = name;
+        this.server_id = server_id;
     }
 
     @Ignore
@@ -22,6 +23,9 @@ public class Pantry {
 
     @PrimaryKey(autoGenerate = true)
     public int id;
+
+
+    public long server_id;
 
     public double latitude;
     public double longitude;

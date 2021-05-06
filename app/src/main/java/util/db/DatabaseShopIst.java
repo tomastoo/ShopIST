@@ -11,7 +11,7 @@ import util.db.entities.PantryItem;
 import util.db.entities.Shop;
 import util.db.queryInterfaces.PantryDAO;
 
-@Database(entities = { Pantry.class, PantryItem.class, Shop.class}, version = 8)
+@Database(entities = { Pantry.class, PantryItem.class, Shop.class}, version = 2)
 public abstract class DatabaseShopIst extends RoomDatabase {
     private static final String DB_NAME = "shop_ist";
     private static DatabaseShopIst instance;
@@ -21,6 +21,7 @@ public abstract class DatabaseShopIst extends RoomDatabase {
         context.deleteDatabase(DB_NAME);
         if(instance == null){
             instance = Room.databaseBuilder(context.getApplicationContext(), DatabaseShopIst.class, DB_NAME).fallbackToDestructiveMigration().build();
+
         }
         return instance;
     }

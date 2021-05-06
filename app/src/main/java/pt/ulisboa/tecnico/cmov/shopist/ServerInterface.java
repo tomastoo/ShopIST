@@ -1,14 +1,10 @@
 package pt.ulisboa.tecnico.cmov.shopist;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
-import androidx.work.WorkRequest;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
@@ -18,37 +14,33 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.concurrent.TimeUnit;
 
-import static androidx.work.PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS;
+import util.db.entities.Pantry;
+import util.db.queryInterfaces.PantryDAO;
+import util.main.SharedClass;
 
 
 public class ServerInterface {
     private static ServerInterface instance;
     private RequestQueue requestQueue;
     private static Context _context;
+    private SharedClass sharedClass;
+    PantryDAO pantryDAO;
     //https://localhost:8080/api/v1/pantries
     String serverUrl ="http://10.0.2.2:8080/";
 
     public ServerInterface(Context context) {
         _context = context;
-        /*
-        PeriodicWorkRequest updateShopsWorkRequest =
-                new PeriodicWorkRequest.Builder(UpdateShopsWorker.class,MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS)
-                        .build();
-        WorkManager.getInstance(_context).enqueueUniquePeriodicWork(
-                "updateShops",
-                ExistingPeriodicWorkPolicy.KEEP,
-                updateShopsWorkRequest);
-         */
+        sharedClass = (SharedClass)_context.getApplicationContext();
+        pantryDAO = sharedClass.instanceDb().pantryDAO();
+
     }
 
     public static synchronized ServerInterface getInstance(Context context) {
@@ -58,15 +50,45 @@ public class ServerInterface {
         return instance;
     }
 
+
+
+    //gets all pantries and then they are inserted in our local DB
     public void getPantries(){
         String url = serverUrl + "api/v1/pantries";
         // Request a string response from the provided URL.
+
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
 
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.d("Debug","Response is: " + response.toString());
+                        if(response.length() > 0)
+                        {
+
+                            for(int i = 0; i < response.length(); i++){
+                                try {
+                                    JSONObject pantryJson = response.getJSONObject(i);
+                                    long server_id = pantryJson.getLong("id");
+                                    double latitude = pantryJson.getDouble("latitude");
+                                    double longitude = pantryJson.getDouble("longitude");
+                                    String name = pantryJson.getString("name");
+                                    Pantry pantry = new Pantry(latitude, longitude, name, server_id);
+
+                                    AsyncTask.execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            pantryDAO.insertPantry(pantry);
+                                        }
+                                    });
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                            MainActivity.getInstance().initListData();
+                        }
                     }
                 }, new Response.ErrorListener() {
 
@@ -91,7 +113,11 @@ public class ServerInterface {
 
     }
 
-
+    /*
+    public void populatePantriesOnLocalDb(){
+        WorkRequest getPantriesWorkRequest = OneTimeWorkRequest.from(GetAllPantriesWork.class);
+        WorkManager.getInstance(_context.getApplicationContext()).enqueue(getPantriesWorkRequest);
+    }*/
     public void updatePantryLists(){
 
     }
@@ -119,8 +145,8 @@ public class ServerInterface {
         getRequestQueue().add(req);
     }
 
-    public class UpdateShopsWorker extends Worker {
-        public UpdateShopsWorker(
+    public class GetAllPantriesWork extends Worker {
+        public GetAllPantriesWork(
                 @NonNull Context context,
                 @NonNull WorkerParameters params) {
             super(context, params);
@@ -131,6 +157,7 @@ public class ServerInterface {
 
             // Do the work here--in this case, upload the images.
             //updateShops();
+            getPantries();
 
             // Indicate whether the work finished successfully with the Result
             return Result.success();

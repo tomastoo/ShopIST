@@ -35,7 +35,8 @@ public class AddItemToPantry extends AppCompatActivity {
 
 
         sc = (SharedClass)getApplicationContext();
-        pantryDao = sc.dbShopIst.pantryDAO();
+        pantryDao = sc.instanceDb().pantryDAO();
+
         handleScannerButton();
         handleConfirmButton();
 
