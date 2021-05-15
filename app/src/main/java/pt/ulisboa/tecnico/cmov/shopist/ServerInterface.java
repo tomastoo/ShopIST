@@ -34,7 +34,7 @@ public class ServerInterface {
     private SharedClass sharedClass;
     PantryDAO pantryDAO;
     //https://localhost:8080/api/v1/pantries
-    String serverUrl ="http://10.0.2.2:8080/";
+    String serverUrl ="http://85.241.64.96:8080/";
 
     public ServerInterface(Context context) {
         _context = context;
