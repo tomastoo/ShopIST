@@ -268,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
             List<String> guids = new ArrayList<>();
             guids.add(uniqueID);
 
-            jsonBody.put("guids", guids.toArray());
+            jsonBody.put("guids", guids);
             final String requestBody = jsonBody.toString();
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
