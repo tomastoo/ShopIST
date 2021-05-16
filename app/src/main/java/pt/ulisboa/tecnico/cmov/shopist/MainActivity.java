@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
@@ -35,7 +36,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 import util.db.DatabaseShopIst;
 import util.db.entities.Pantry;
@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
     //db stuff
     SharedClass sc;
     DatabaseShopIst db;
+    boolean empty = false;
 
     // Global Variables
     String new_list_type;
@@ -89,6 +90,16 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
         expandableListView.setOnChildClickListener(this);
         //AsyncTask.execute(this::updateLocalDB);
         sc.updateLocalDB();
+
+        /*AsyncTask.execute(() -> {
+            List<util.db.entities.Pantry> lists_pantry = db.pantryDAO().getAllPantryLists();
+            if (lists_pantry.size() < 1){
+                empty = true;
+            }
+        });
+        if (empty){
+            AsyncTask.execute(this::initListData);
+        }*/
         AsyncTask.execute(this::initListData);
         //AsyncTask.execute(Database::fillDatabase);
     }
@@ -100,6 +111,8 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
     public void initListData() {
         //update PantryList before making queries to de local DB
 
+        /*listGroup = new ArrayList<>();
+        listItem = new HashMap<>();*/
 
         listGroup.add(getString(R.string.group1));
         listGroup.add(getString(R.string.group2));
@@ -264,9 +277,10 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
                 gpsTracker.showSettingsAlert();
             }
 
-            String  uniqueID = UUID.randomUUID().toString();
+            String androidId = Settings.Secure.getString(getContentResolver(),
+                    Settings.Secure.ANDROID_ID);
             List<String> guids = new ArrayList<>();
-            guids.add(uniqueID);
+            guids.add(androidId);
 
             jsonBody.put("guids", guids);
             final String requestBody = jsonBody.toString();

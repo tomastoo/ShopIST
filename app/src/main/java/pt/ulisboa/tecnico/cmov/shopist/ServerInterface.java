@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.cmov.shopist;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.provider.Settings;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -40,7 +41,6 @@ public class ServerInterface {
         _context = context;
         sharedClass = (SharedClass)_context.getApplicationContext();
         pantryDAO = sharedClass.instanceDb().pantryDAO();
-
     }
 
     public static synchronized ServerInterface getInstance(Context context) {
@@ -54,7 +54,72 @@ public class ServerInterface {
 
     //gets all pantries and then they are inserted in our local DB
     public void getPantries(){
-        String url = serverUrl + "api/v1/pantries";
+        String url = serverUrl + "api/v1/pantries_guid/";
+        String androidId = Settings.Secure.getString(_context.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        serverUrl += androidId;
+        // Request a string response from the provided URL.
+
+        JsonArrayRequest jsonObjectRequest = new JsonArrayRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.d("Debug","Response is: " + response.toString());
+                        if(response.length() > 0)
+                        {
+
+                            for(int i = 0; i < response.length(); i++){
+                                try {
+                                    JSONObject pantryJson = response.getJSONObject(i);
+                                    long server_id = pantryJson.getLong("id");
+                                    double latitude = pantryJson.getDouble("latitude");
+                                    double longitude = pantryJson.getDouble("longitude");
+                                    String name = pantryJson.getString("name");
+                                    Pantry pantry = new Pantry(latitude, longitude, name, server_id);
+
+                                    AsyncTask.execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            pantryDAO.insertPantry(pantry);
+                                        }
+                                    });
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                            MainActivity.getInstance().initListData();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse errorRes = error.networkResponse;
+                        String stringData = "";
+                        if(errorRes != null && errorRes.data != null){
+                            try {
+                                stringData = new String(errorRes.data,"UTF-8");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        Log.e("Error",error.toString());
+
+                    }
+                });
+
+// Access the RequestQueue through your singleton class.
+        ServerInterface.getInstance(_context).addToRequestQueue(jsonObjectRequest);
+
+    }
+
+    //gets all pantries and then they are inserted in our local DB
+    public void getPantries(String androidId){
+        String url = serverUrl + "api/v1/pantries_guid/";
+        serverUrl += androidId;
         // Request a string response from the provided URL.
 
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest

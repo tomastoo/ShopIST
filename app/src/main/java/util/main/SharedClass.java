@@ -1,6 +1,7 @@
 package util.main;
 
 import android.app.Application;
+import android.provider.Settings;
 
 import androidx.room.Room;
 
@@ -23,6 +24,8 @@ public class SharedClass extends Application {
         return dbShopIst;
     }
     public void updateLocalDB() {
-        ServerInterface.getInstance(this).getPantries();
+        String androidId = Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        ServerInterface.getInstance(this).getPantries(androidId);
     }
 }
