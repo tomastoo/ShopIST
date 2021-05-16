@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "pt.ulisboa.tecnico.cmov.shopist"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -48,6 +48,13 @@ dependencies {
 
 
     implementation 'androidx.cardview:cardview:1.0.0'
+
+    def camerax_version = "1.0.0-beta07"
+    implementation "androidx.camera:camera-camera2:$camerax_version"
+    implementation "androidx.camera:camera-lifecycle:$camerax_version"
+    implementation "androidx.camera:camera-view:1.0.0-alpha14"
+
+    implementation 'com.google.zxing:core:3.3.0'
 
     implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.3'
     def room_version = "2.2.6"

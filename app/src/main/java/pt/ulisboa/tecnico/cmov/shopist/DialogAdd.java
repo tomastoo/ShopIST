@@ -3,13 +3,13 @@ package pt.ulisboa.tecnico.cmov.shopist;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
@@ -36,6 +36,13 @@ public class DialogAdd extends AppCompatDialogFragment{
                     public void onClick(DialogInterface dialog, int which) {
                         String name = editTextListName.getText().toString();
                         dialogAddListener.applyName(name);
+                    }
+                })
+                .setNeutralButton("QR Code", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(getContext(), QRCodeScanner.class);
+                        startActivity(intent);
                     }
                 });
         editTextListName = view.findViewById(R.id.edit_list_name);
