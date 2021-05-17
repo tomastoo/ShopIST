@@ -19,18 +19,18 @@ import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 
-import com.google.maps.DirectionsApi;
+/*import com.google.maps.DirectionsApi;
 import com.google.maps.GeoApiContext;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.DirectionsLeg;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.Duration;
-import com.google.maps.model.TravelMode;
+import com.google.maps.model.TravelMode;*/
 
 import java.io.IOException;
 
-class GpsTracker extends Service implements LocationListener {
+public class GpsTracker extends Service implements LocationListener {
     private final Context mContext;
 
     // flag for GPS status
@@ -59,7 +59,7 @@ class GpsTracker extends Service implements LocationListener {
         this.mContext = context;
         getLocation();
     }
-
+    /*
     public String getTimeToLocation(String origin, String destination) throws PackageManager.NameNotFoundException, InterruptedException, ApiException, IOException {
         ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
         Bundle bundle = ai.metaData;
@@ -83,7 +83,9 @@ class GpsTracker extends Service implements LocationListener {
         Duration duration = leg.duration;
         return duration.humanReadable;
     }
+    */
     public Location getLocation() {
+
         try {
             locationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
 
@@ -251,4 +253,5 @@ class GpsTracker extends Service implements LocationListener {
     public IBinder onBind(Intent arg0) {
         return null;
     }
+
 }

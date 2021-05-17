@@ -26,6 +26,7 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 
+import pt.ulisboa.tecnico.cmov.shopist.GpsTracker;
 import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import util.db.entities.Pantry;
 import util.db.entities.Shop;
