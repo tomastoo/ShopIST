@@ -30,5 +30,9 @@ public class Pantry {
     public double latitude;
     public double longitude;
     public String name;
+
+
+    @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
+    public String time_stamp;
     
 }

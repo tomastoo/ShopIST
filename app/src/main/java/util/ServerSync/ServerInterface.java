@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.shopist;
+package util.ServerSync;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 
+import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import util.db.entities.Pantry;
 import util.db.queryInterfaces.PantryDAO;
 import util.main.SharedClass;

@@ -11,13 +11,12 @@ import androidx.room.PrimaryKey;
         @ForeignKey(entity = Shop.class, parentColumns = "id", childColumns = "shopId")
 })
 public class PantryItem {
-    public PantryItem (int pantryId, int shopId, int quantity, int stock , String name, float price) {
+    public PantryItem (int pantryId, int shopId, int quantity, int stock , String name) {
         this.shopId = shopId;
         this.pantryId = pantryId;
         this.quantity = quantity;
         this.stock = stock;
         this.name = name;
-        this.price = price;
     }
 
     @PrimaryKey(autoGenerate = true)

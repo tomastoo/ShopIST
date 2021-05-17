@@ -5,16 +5,13 @@ import android.provider.Settings;
 
 import androidx.room.Room;
 
-import pt.ulisboa.tecnico.cmov.shopist.ServerInterface;
+import util.ServerSync.ServerInterface;
 import util.db.DatabaseShopIst;
 
 
 public class SharedClass extends Application {
-    private static SharedClass sharedClass;
-    private static DatabaseShopIst dbShopIst = null;
 
-    public SharedClass () {
-    }
+    private static DatabaseShopIst dbShopIst = null;
 
     public DatabaseShopIst instanceDb() {
         if(dbShopIst == null) {

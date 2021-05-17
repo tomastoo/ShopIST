@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import util.db.Database;
 import util.db.DatabaseShopIst;
 import util.db.entities.Pantry;
 import util.db.entities.PantryItem;
@@ -71,8 +72,8 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
         setContentView(R.layout.activity_main);
         instance = this;
         sc = (SharedClass) getApplicationContext();
-
         db = sc.instanceDb();
+
 
         try {
             if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
@@ -100,8 +101,14 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
         if (empty){
             AsyncTask.execute(this::initListData);
         }*/
-        AsyncTask.execute(this::initListData);
-        //AsyncTask.execute(Database::fillDatabase);
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                Database.clearDatabase(sc);
+                Database.fillDatabase(sc);
+                initListData();
+            }
+        });
     }
 
     public static MainActivity getInstance() {
@@ -327,5 +334,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
             e.printStackTrace();
         }
     }
+
+
 }
 

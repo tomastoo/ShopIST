@@ -8,6 +8,7 @@ import java.util.List;
 
 import util.db.entities.Pantry;
 import util.db.entities.PantryItem;
+import util.db.entities.Shop;
 
 @Dao
 public interface PantryDAO {
@@ -22,15 +23,24 @@ public interface PantryDAO {
  @Query("SELECT * FROM pantry")
     List<Pantry> getAllPantryLists();
 
+ @Query("SELECT * FROM shop")
+    List<Shop> getAllShops();
+
  @Query("DELETE FROM pantry")
     void nukePantries();
 
  @Query("DELETE FROM PantryItem")
     void nukePantryItems();
 
+ @Query("DELETE FROM Shop")
+    void nukeShops();
+
  @Insert
-    void insertPantryList(PantryItem pantryItem);
+    long insertPantryItem(PantryItem pantryItem);
 
  @Insert
     long insertPantry(Pantry pantry);
+
+ @Insert
+    long insertShop(Shop shop);
 }

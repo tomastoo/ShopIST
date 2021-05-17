@@ -7,39 +7,70 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import util.db.entities.PantryItem;
+import util.db.entities.Shop;
 import util.db.queryInterfaces.PantryDAO;
 import util.main.SharedClass;
+import util.main.ShopSelectionAdapter;
 
 public class AddItemToPantry extends AppCompatActivity {
-    SharedClass sc;
-    PantryDAO pantryDao;
-    int quantity;
-    int stock;
-    float price;
-    String name;
-    long pantryId;
+    private SharedClass sc;
+    private PantryDAO pantryDao;
+    private int quantity;
+    private int stock;
+    private Shop selectedShop;
+    private String name;
+    private int pantryId;
     private String pantryName;
+    private ShopSelectionAdapter adapterShop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item_to_pantry);
         Intent intent = getIntent();
-        pantryId = intent.getLongExtra("PantryId", 0);
+        pantryId = intent.getIntExtra("PantryId", 0);
         pantryName = intent.getStringExtra("PantryName");
 
 
         sc = (SharedClass)getApplicationContext();
         pantryDao = sc.instanceDb().pantryDAO();
-
+        AsyncTask.execute(this::handleSpinnerShops);
         handleScannerButton();
         handleConfirmButton();
 
+    }
+
+    private void handleSpinnerShops(){
+        ArrayList<Shop> shopList = (ArrayList<Shop>) pantryDao.getAllShops();
+        //get the spinner from the xml.
+        Spinner spinner = findViewById(R.id.spinner_shops);
+        adapterShop = new ShopSelectionAdapter(this, shopList);
+        spinner.setAdapter(adapterShop);
+
+        spinner.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent,
+                                               View view, int position, long id)
+                    {
+                        selectedShop = (Shop) parent.getItemAtPosition(position);
+                    }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent)
+                    {
+                    }
+                });
     }
 
     private void handleConfirmButton(){
@@ -52,11 +83,6 @@ public class AddItemToPantry extends AppCompatActivity {
                 if(itemName == null)
                     return;
 
-                textInputLayout = findViewById(R.id.textInput_ItemPrice);
-                Editable itemPrice = textInputLayout.getEditText().getText();
-                if(itemPrice == null)
-                    return;
-
                 textInputLayout = findViewById(R.id.textInput_ItemQuantity);
                 Editable itemQuantity = textInputLayout.getEditText().getText();
                 if(itemQuantity == null)
@@ -67,6 +93,10 @@ public class AddItemToPantry extends AppCompatActivity {
                 if(itemStock == null)
                     return;
 
+                if (selectedShop == null)
+                    return;
+
+
                 quantity = Integer.parseInt(itemQuantity.toString());
                 stock = Integer.parseInt(itemStock.toString());
 
@@ -74,7 +104,7 @@ public class AddItemToPantry extends AppCompatActivity {
                     return;
 
                 name = itemName.toString();
-                price = Float.parseFloat(itemPrice.toString());
+                //price = Float.parseFloat(itemPrice.toString());
                 asyncInsert();
 
             }
@@ -89,6 +119,15 @@ public class AddItemToPantry extends AppCompatActivity {
     }
 
     private void insertItem(){
+        PantryItem pantryItem = new PantryItem(pantryId, selectedShop.id, quantity, stock, name);
+        pantryDao.insertPantryItem(pantryItem);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // Stuff that updates the UI
+                adapterShop.notifyDataSetChanged();
+            }
+        });
     }
 
     private void handleScannerButton(){

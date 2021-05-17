@@ -42,7 +42,6 @@ public class PantryList extends AppCompatActivity {
         sc = (SharedClass)getApplicationContext();
         Intent intent = getIntent();
         name = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-
         pantryDAO = sc.instanceDb().pantryDAO();
 
         AsyncTask.execute(this::showItemList);
@@ -71,6 +70,7 @@ public class PantryList extends AppCompatActivity {
     }
 
     private void setMap(){
+        pantry = pantryDAO.getPantry(name);
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         Log.w("PANTRY_LAT_LON", "latitude = " + pantry.latitude + " longitude = " + pantry.longitude);
