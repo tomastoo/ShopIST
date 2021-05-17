@@ -1,15 +1,21 @@
 package pt.ulisboa.tecnico.cmov.shopist;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
@@ -24,6 +30,7 @@ import util.main.SharedClass;
 import util.main.ShopSelectionAdapter;
 
 public class AddItemToPantry extends AppCompatActivity {
+    private static int REQUEST_CODE = 1;
     private SharedClass sc;
     private PantryDAO pantryDao;
     private int quantity;
@@ -33,6 +40,8 @@ public class AddItemToPantry extends AppCompatActivity {
     private int pantryId;
     private String pantryName;
     private ShopSelectionAdapter adapterShop;
+    private String barcode;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +50,6 @@ public class AddItemToPantry extends AppCompatActivity {
         Intent intent = getIntent();
         pantryId = intent.getIntExtra("PantryId", 0);
         pantryName = intent.getStringExtra("PantryName");
-
-
         sc = (SharedClass)getApplicationContext();
         pantryDao = sc.instanceDb().pantryDAO();
         AsyncTask.execute(this::handleSpinnerShops);
@@ -51,6 +58,14 @@ public class AddItemToPantry extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == REQUEST_CODE && Activity.RESULT_OK == resultCode) {
+            barcode = intent.getStringExtra("Barcode");
+            Log.w("BARCODE", String.valueOf(barcode));
+        }
+    }
     private void handleSpinnerShops(){
         ArrayList<Shop> shopList = (ArrayList<Shop>) pantryDao.getAllShops();
         //get the spinner from the xml.
@@ -80,17 +95,17 @@ public class AddItemToPantry extends AppCompatActivity {
             public void onClick(View v) {
                 TextInputLayout textInputLayout = findViewById(R.id.textInput_ItemName);
                 Editable itemName = textInputLayout.getEditText().getText();
-                if(itemName == null)
+                if(itemName.length() <= 0)
                     return;
 
                 textInputLayout = findViewById(R.id.textInput_ItemQuantity);
                 Editable itemQuantity = textInputLayout.getEditText().getText();
-                if(itemQuantity == null)
+                if(itemQuantity.length() <= 0)
                     return;
 
                 textInputLayout = findViewById(R.id.textInput_ItemStock);
                 Editable itemStock = textInputLayout.getEditText().getText();
-                if(itemStock == null)
+                if(itemStock.length() <= 0)
                     return;
 
                 if (selectedShop == null)
@@ -119,7 +134,7 @@ public class AddItemToPantry extends AppCompatActivity {
     }
 
     private void insertItem(){
-        PantryItem pantryItem = new PantryItem(pantryId, selectedShop.id, quantity, stock, name);
+        PantryItem pantryItem = new PantryItem(pantryId, selectedShop.id, quantity, stock, name, barcode);
         pantryDao.insertPantryItem(pantryItem);
         runOnUiThread(new Runnable() {
             @Override
@@ -142,6 +157,6 @@ public class AddItemToPantry extends AppCompatActivity {
 
     private void openItemScanActivity(){
         Intent intent = new Intent(this, ItemScan.class);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE);
     }
 }

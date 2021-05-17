@@ -20,10 +20,12 @@ public class SharedClass extends Application {
         }
         return dbShopIst;
     }
+
     public void updateLocalDB() {
         String androidId = Settings.Secure.getString(getContentResolver(),
                 Settings.Secure.ANDROID_ID);
         ServerInterface.getInstance(this).getPantries();
         ServerInterface.getInstance(this).getShops();
     }
+
 }

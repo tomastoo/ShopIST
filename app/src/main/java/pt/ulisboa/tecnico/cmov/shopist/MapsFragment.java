@@ -18,13 +18,16 @@ import android.view.ViewGroup;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.*;
 
+import util.db.entities.Pantry;
+import util.main.SharedClass;
+
 public class MapsFragment extends Fragment {
+
+    private static final int REQUEST_CODE = 100;
     private double latitude;
     private double longitude;
-    private static final int REQUEST_CODE = 100;
-    public MapsFragment(double latitude, double longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
+
+    public MapsFragment() {
     }
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
@@ -53,12 +56,19 @@ public class MapsFragment extends Fragment {
             }
 
             //googleMap.addMarker(new MarkerOptions().);
-
+/*            PantryList pantryListAct = (PantryList)getActivity();
+            Pantry pantry = pantryListAct.getPantry();
+ */
             LatLng location = new LatLng(latitude, longitude);
             googleMap.addMarker(new MarkerOptions().position(location));
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 16.0f));
         }
     };
+
+    public void setArgs(double latitude, double longitude){
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
 
     @Nullable
     @Override
