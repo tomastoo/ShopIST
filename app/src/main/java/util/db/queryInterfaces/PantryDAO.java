@@ -26,6 +26,11 @@ public interface PantryDAO {
  @Query("SELECT * FROM shop")
     List<Shop> getAllShops();
 
+ @Query("SELECT pi.name as name, pi.quantity as quantity, pi.stock as stock FROM shop AS s INNER JOIN pantryItem AS pi ON pi.shopId = s.id " +
+         " WHERE s.name = :shopName" +
+         " AND pi.stock < pi.quantity ")
+    List<util.db.queryInterfaces.PantryItem> getAllShopItems(String shopName);
+
  @Query("DELETE FROM pantry")
     void nukePantries();
 

@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_margin="10dp"
-        android:text="Baskets"
+        android:text="Basket List"
         android:textSize="20sp"/> <!-- align button to the right -->
 </LinearLayout>
 
@@ -30,7 +30,7 @@
 
 
     <ListView
-        android:id="@+id/ListViewShoppingList"
+        android:id="@+id/ListViewBasketList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true">

@@ -161,8 +161,6 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
                 //TODO Fill time
                 list3.add(item.name);
             }
-
-            list3.add("+");
             listItem.put(listGroup.get(2), list3);
         });
 
@@ -205,9 +203,9 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
                     new_list_type = "Shopping";
                     openDialog();
                 } else {
-                    /*Intent intent = new Intent(MainActivity.this, ShoppingList.class);
+                    Intent intent = new Intent(MainActivity.this, ShoppingList.class);
                     intent.putExtra(EXTRA_MESSAGE, item);
-                    startActivity(intent);*/
+                    startActivity(intent);
                 }
                 break;
         }

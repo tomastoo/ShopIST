@@ -42,6 +42,8 @@
 
         <activity android:name=".ItemScan" />
         <activity android:name=".PantryList" />
+        <activity android:name=".ShoppingList" />
+        <activity android:name=".BasketList" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -97,7 +97,6 @@ public class ServerInterface {
                                 }
 
                             }
-                            MainActivity.getInstance().initListData();
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -177,7 +176,6 @@ public class ServerInterface {
                                 }
 
                             }
-                            MainActivity.getInstance().initListData();
                         }
                     }
 
