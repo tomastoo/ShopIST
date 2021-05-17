@@ -36,7 +36,7 @@ public interface PantryDAO {
     void nukeShops();
 
  @Insert
-    long insertPantryItem(PantryItem pantryItem);
+    void insertPantryList(PantryItem pantryItem);
 
  @Insert
     long insertPantry(Pantry pantry);

@@ -7,6 +7,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -17,6 +18,17 @@ import android.provider.Settings;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
+
+import com.google.maps.DirectionsApi;
+import com.google.maps.GeoApiContext;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.DirectionsLeg;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.DirectionsRoute;
+import com.google.maps.model.Duration;
+import com.google.maps.model.TravelMode;
+
+import java.io.IOException;
 
 class GpsTracker extends Service implements LocationListener {
     private final Context mContext;
@@ -48,6 +60,29 @@ class GpsTracker extends Service implements LocationListener {
         getLocation();
     }
 
+    public String getTimeToLocation(String origin, String destination) throws PackageManager.NameNotFoundException, InterruptedException, ApiException, IOException {
+        ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+        Bundle bundle = ai.metaData;
+        String myApiKey = bundle.getString("com.google.android.geo.API_KEY");
+        // - We need a context to access the API
+
+        GeoApiContext geoApiContext = new GeoApiContext.Builder()
+                .apiKey(myApiKey)
+                .build();
+
+        // - Perform the actual request
+        DirectionsResult directionsResult = DirectionsApi.newRequest(geoApiContext)
+                .mode(TravelMode.WALKING)
+                .origin(origin)
+                .destination(destination)
+                .await();
+
+        // - Parse the result
+        DirectionsRoute route = directionsResult.routes[0];
+        DirectionsLeg leg = route.legs[0];
+        Duration duration = leg.duration;
+        return duration.humanReadable;
+    }
     public Location getLocation() {
         try {
             locationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
