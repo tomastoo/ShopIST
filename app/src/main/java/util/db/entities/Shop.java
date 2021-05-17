@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey;
 @Entity(indices = {@Index(value = "name", unique = true)})
 public class Shop {
 
-    public Shop (float latitude, float longitude, String name, long server_id){
+    public Shop (double latitude, double longitude, String name, long server_id){
         this.latitude = latitude;
         this.longitude = longitude;
         this.name = name;
@@ -18,7 +18,7 @@ public class Shop {
     @PrimaryKey(autoGenerate = true)
     public int id;
     public long server_id;
-    public float latitude;
-    public float longitude;
+    public double latitude;
+    public double longitude;
     public String name;
 }

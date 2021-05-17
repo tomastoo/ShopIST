@@ -147,12 +147,13 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
 
         AsyncTask.execute(() -> {
             List<String> list3 = new ArrayList<>();
-/*
-            List<util.db.entities.ShoppingList> lists_shopping = db.shoppingListDAO().getAllShoppingLists();
-            for(util.db.entities.ShoppingList item : lists_shopping){
+
+            List<util.db.entities.Shop> lists_shopping = db.pantryDAO().getAllShopsLists();
+            for(util.db.entities.Shop item : lists_shopping){
+                //TODO Fill time
                 list3.add(item.name);
             }
-*/
+
             list3.add("+");
             listItem.put(listGroup.get(2), list3);
         });

@@ -14,6 +14,9 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonArrayObjectRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -24,6 +27,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 
 import util.db.entities.Pantry;
+import util.db.entities.Shop;
 import util.db.queryInterfaces.PantryDAO;
 import util.main.SharedClass;
 
@@ -35,7 +39,9 @@ public class ServerInterface {
     private SharedClass sharedClass;
     PantryDAO pantryDAO;
     //https://localhost:8080/api/v1/pantries
-    String serverUrl ="http://85.241.64.96:8080/";
+    String serverUrl ="http://10.0.2.2:8080/";
+    GpsTracker gpsTracker;
+    long minDistance = 10000;
 
     public ServerInterface(Context context) {
         _context = context;
@@ -57,7 +63,7 @@ public class ServerInterface {
         String url = serverUrl + "api/v1/pantries_guid/";
         String androidId = Settings.Secure.getString(_context.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
-        serverUrl += androidId;
+        url += androidId;
         // Request a string response from the provided URL.
 
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest
@@ -68,7 +74,6 @@ public class ServerInterface {
                         Log.d("Debug","Response is: " + response.toString());
                         if(response.length() > 0)
                         {
-
                             for(int i = 0; i < response.length(); i++){
                                 try {
                                     JSONObject pantryJson = response.getJSONObject(i);
@@ -116,10 +121,95 @@ public class ServerInterface {
 
     }
 
+    public void getShops() {
+        String url = serverUrl + "api/v1/shops_location/";
+
+        gpsTracker = new GpsTracker(_context);
+
+        String location = "";
+
+        if(gpsTracker.canGetLocation()){
+            double latitude = gpsTracker.getLatitude();
+            double longitude = gpsTracker.getLongitude();
+            location = "\"" + latitude + "@" + longitude +"\"";
+
+        }else{
+            gpsTracker.showSettingsAlert();
+        }
+
+
+        JSONObject jsonBody  = null;
+
+        try {
+            jsonBody = new JSONObject("{\"location\":"+ location +", \"minDistance\":" + 10000000 + "}]");
+        } catch (Exception e) {};
+        // Request a string response from the provided URL.
+
+        JsonArrayObjectRequest jsonObjectRequest = new JsonArrayObjectRequest
+                (Request.Method.POST, url,jsonBody, new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.d("Debug","Response is: " + response.toString());
+                        if(response.length() > 0)
+                        {
+
+                            for(int i = 0; i < response.length(); i++){
+                                try {
+                                    JSONObject shopsJson = response.getJSONObject(i);
+                                    long server_id = shopsJson.getLong("id");
+                                    double latitude = shopsJson.getDouble("latitude");
+                                    double longitude = shopsJson.getDouble("longitude");
+                                    String name = shopsJson.getString("name");
+                                    Shop shop = new Shop(latitude, longitude, name, server_id);
+
+                                    AsyncTask.execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            sharedClass.instanceDb().pantryDAO().insertShop(shop);
+                                        }
+                                    });
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                            MainActivity.getInstance().initListData();
+                        }
+                    }
+
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse errorRes = error.networkResponse;
+                        String stringData = "";
+                        if(errorRes != null && errorRes.data != null){
+                            try {
+                                stringData = new String(errorRes.data,"UTF-8");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        Log.e("Error",error.toString());
+
+                    }
+                });
+
+// Access the RequestQueue through your singleton class.
+        ServerInterface.getInstance(_context).addToRequestQueue(jsonObjectRequest);
+
+    }
+
+
+
+
+
     //gets all pantries and then they are inserted in our local DB
     public void getPantries(String androidId){
         String url = serverUrl + "api/v1/pantries_guid/";
-        serverUrl += androidId;
+        //serverUrl += androidId;
         // Request a string response from the provided URL.
 
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest
