@@ -22,15 +22,15 @@ public class Database {
                 pantryDAO.insertPantry(new Pantry(38.737020040649575, 38.737020040649575, "Alameda", 2))
         };
 
-        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],1, 2, "pao"));
-        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],2, 1, "queijo"));
-        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],3 ,0, "fiambre"));
-        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],4 ,0, "tomates"));
-        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],2 , 0, "alface"));
-        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],3 , 0,  "gelado"));
-        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[1], (int)shopIds[1],1 , 0, "bolo"));
-        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[1], (int)shopIds[1],2 , 0, "peixe"));
-        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[1],(int)shopIds[1],4 , 0, "gelado"));
+        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],1, 2, "pao", null));
+        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],2, 1, "queijo", null));
+        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],3 ,0, "fiambre", null));
+        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],4 ,0, "tomates", null));
+        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],2 , 0, "alface", null));
+        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],3 , 0,  "gelado", null));
+        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[1], (int)shopIds[1],1 , 0, "bolo", null));
+        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[1], (int)shopIds[1],2 , 0, "peixe", null));
+        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[1],(int)shopIds[1],4 , 0, "gelado", null));
 
     }
 

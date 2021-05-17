@@ -25,6 +25,7 @@ public class SharedClass extends Application {
         }
         return dbShopIst;
     }
+
     public void updateLocalDB() {
         String androidId = Settings.Secure.getString(getContentResolver(),
                 Settings.Secure.ANDROID_ID);

@@ -45,7 +45,7 @@ public class PantryList extends AppCompatActivity {
         pantryDAO = sc.instanceDb().pantryDAO();
 
         AsyncTask.execute(this::showItemList);
-        AsyncTask.execute(this::setMap);
+       // AsyncTask.execute(this::setMap);
 
         TextView textView = (TextView) findViewById(R.id.textView);
         textView.setText(name);
@@ -70,16 +70,18 @@ public class PantryList extends AppCompatActivity {
     }
 
     private void setMap(){
-        pantry = pantryDAO.getPantry(name);
+        //pantry = pantryDAO.getPantry(name);
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         Log.w("PANTRY_LAT_LON", "latitude = " + pantry.latitude + " longitude = " + pantry.longitude);
-        MapsFragment mapsFragment = new MapsFragment(pantry.latitude, pantry.longitude);
+        MapsFragment mapsFragment = new MapsFragment();
+        mapsFragment.setArgs(pantry.latitude, pantry.longitude);
         transaction.replace(R.id.mapView, mapsFragment);
         transaction.commit();
     }
 
     private void showItemList(){
+        pantry = pantryDAO.getPantry(name);
         setPantryItemList();
         setArrayAdapter();
     }
@@ -126,4 +128,7 @@ public class PantryList extends AppCompatActivity {
         super.onPause();
     }
 
+    public Pantry getPantry() {
+        return pantry;
+    }
 }
