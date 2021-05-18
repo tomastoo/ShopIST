@@ -66,6 +66,7 @@ public class ServerInterface {
         String androidId = Settings.Secure.getString(_context.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
         url += androidId;
+        Log.d("Debug","ID is: " + androidId);
         // Request a string response from the provided URL.
 
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest
