@@ -70,7 +70,6 @@ public class MapsFragment extends Fragment implements  GoogleApiClient.OnConnect
     // flag for GPS status
     boolean canGetLocation = false;
 
-
     // The minimum distance to change Updates in meters
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
 
@@ -136,24 +135,6 @@ public class MapsFragment extends Fragment implements  GoogleApiClient.OnConnect
         this.mMap = googleMap;
     }
 
-/*
-    public void handleDirections(GoogleMap map, LatLng sourcePosition, LatLng destPosition){
-        GMapV2Direction md = new GMapV2Direction();
-
-        Document doc = md.getDocument(sourcePosition, destPosition,
-                GMapV2Direction.MODE_WALKING);
-
-        ArrayList<LatLng> directionPoint = md.getDirection(doc);
-        PolylineOptions rectLine = new PolylineOptions().width(3).color(
-                Color.RED);
-
-        for (int i = 0; i < directionPoint.size(); i++) {
-            rectLine.add(directionPoint.get(i));
-        }
-        map.addPolyline(rectLine);
-    }
-*/
-
     public void setArgs(double latitude, double longitude, Context mContext){
         this.mContext = mContext;
         destLatitude = latitude;
@@ -178,38 +159,7 @@ public class MapsFragment extends Fragment implements  GoogleApiClient.OnConnect
         }
     }
 
-/*    //to get user location
-    private void getMyLocation(){
-        myLocation =
 
-        mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-            @Override
-            public void onMyLocationChange(Location location) {
-
-                myLocation=location;
-                LatLng ltlng=new LatLng(location.getLatitude(),location.getLongitude());
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
-                        ltlng, 16f);
-                mMap.animateCamera(cameraUpdate);
-            }
-        });
-
-        //get destination location when user click on map
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-
-                end=latLng;
-
-                mMap.clear();
-
-                start=new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
-                //start route finding
-                Findroutes(start,end);
-            }
-        });
-
-    }*/
     public void getLocation() {
 
         try {
@@ -275,18 +225,16 @@ public class MapsFragment extends Fragment implements  GoogleApiClient.OnConnect
     // function to find Routes.
     public void Findroutes(LatLng Start, LatLng End)
     {
-
         if(Start==null || End==null) {
             Toast.makeText(getActivity(),"Unable to get location",Toast.LENGTH_LONG).show();
         }
         else
         {
-
             Routing routing = new Routing.Builder()
                     .travelMode(AbstractRouting.TravelMode.DRIVING)
                     .withListener(this)
                     .waypoints(Start, End)
-                    .key(getKey())  //also define your api key here.
+                    .key(getKey())
                     .build();
             routing.execute();
         }
@@ -329,7 +277,6 @@ public class MapsFragment extends Fragment implements  GoogleApiClient.OnConnect
         polylines = new ArrayList<>();
         //add route(s) to the map using polyline
         for (int i = 0; i < route.size(); i++) {
-
             if(i==shortestRouteIndex)
             {
                 polyOptions.color(getResources().getColor(R.color.green, mContext.getTheme()));
@@ -342,10 +289,6 @@ public class MapsFragment extends Fragment implements  GoogleApiClient.OnConnect
                 polylines.add(polyline);
 
             }
-            else {
-
-            }
-
         }
 
         //Add Marker on route starting position
