@@ -19,6 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
+import util.ServerSync.ServerInterface;
 import util.db.entities.PantryItem;
 import util.db.queryInterfaces.ShopItem;
 import util.main.SharedClass;
@@ -48,8 +49,10 @@ public class BasketList extends AppCompatActivity {
                     public void run() {
                         for (ShopItem si: SharedClass.getBasketList()) {
                                 PantryItem pi = sharedClass.instanceDb().pantryDAO().getPantryItem(si.id);
+                                String name = sharedClass.instanceDb().pantryDAO().getPantryNameByItem(si.id);
                                 pi.stock = pi.quantity;
                                 sharedClass.instanceDb().pantryDAO().updatePantryItem(pi);
+                                ServerInterface.getInstance(getApplicationContext()).updatePantryItem(pi,name);
                             }
                         SharedClass.getBasketList().clear();
                         BasketList.this.finish();
