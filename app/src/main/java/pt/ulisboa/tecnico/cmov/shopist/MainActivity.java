@@ -44,6 +44,7 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.shopist.Pantry.Maps.MapsFragment;
 import pt.ulisboa.tecnico.cmov.shopist.Pantry.PantryList;
+import util.ServerSync.ServerInterface;
 import util.db.Database;
 import util.db.DatabaseShopIst;
 import util.db.entities.Pantry;
@@ -261,6 +262,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
                 //TODO Fill time
                 list3.add(item.name);
             }
+
             list3.add("+");
             listItem.put(listGroup.get(2), list3);
         });
@@ -330,6 +332,14 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
         String name = newItemName;
         switch (new_list_type) {
             case "Shopping":
+                util.db.entities.Shop shoppingList = new util.db.entities.Shop(0,0,name,0);
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        db.pantryDAO().insertShop(shoppingList);
+                    }
+                });
+                ServerInterface.getInstance(getApplicationContext()).createShop(shoppingList);
 
                 list = listItem.get(listGroup.get(2));
                 list.set((list.size() - 1), name);
@@ -480,6 +490,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
         }
         return null;
     }
+
 
 }
 
