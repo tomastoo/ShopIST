@@ -47,6 +47,9 @@ public interface PantryDAO {
  @Query("DELETE FROM Shop")
     void nukeShops();
 
+ @Query("DELETE FROM pantryitem WHERE pantryitem.id = :id")
+    void removePantryItem(long id);
+
  @Insert
     void insertPantryItem(PantryItem pantryItem);
 
@@ -58,8 +61,6 @@ public interface PantryDAO {
 
  @Update
  void updatePantryItem(PantryItem pantryItem);
-
-
 
 
 }

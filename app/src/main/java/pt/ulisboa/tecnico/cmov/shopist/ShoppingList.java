@@ -23,6 +23,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
+import pt.ulisboa.tecnico.cmov.shopist.Pantry.ItemScan;
 import util.db.queryInterfaces.PantryItem;
 import util.db.queryInterfaces.ShopItem;
 import util.main.SharedClass;
@@ -201,5 +202,4 @@ public class ShoppingList extends AppCompatActivity {
         SharedClass.getBasketList().add(new ShopItem(pi.id, pi.name, String.valueOf(pi.quantity-pi.stock)));
         fillList();
     }
-
 }

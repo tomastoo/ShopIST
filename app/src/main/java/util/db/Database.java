@@ -22,7 +22,7 @@ public class Database {
                 pantryDAO.insertPantry(new Pantry(38.73700329289796, -9.138705001720002, "Alameda", 2))
         };
 
-        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],1, 2, "pao", null));
+        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],1, 1, "pao", null));
         pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],2, 1, "queijo", null));
         pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],3 ,0, "fiambre", null));
         pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],4 ,0, "tomates", null));
