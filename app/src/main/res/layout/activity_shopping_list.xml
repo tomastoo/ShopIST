@@ -7,24 +7,39 @@ android:layout_height="match_parent"
 android:orientation="vertical"
 android:layout_margin="10dp"
 tools:context=".ShoppingList">
-<LinearLayout
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_margin="10dp"
-        android:text="Nome1"
-        android:textSize="20sp"/> <!-- align button to the right -->
-    <ImageButton
-        android:layout_gravity="end"
-        android:layout_width="20dp"
-        android:layout_height="match_parent"/>
 
-</LinearLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="70dp">
+
+        <!-- align button to the right -->
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:gravity="left"
+            android:text="Nome1"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.627" />
+
+        <ImageButton
+            android:id="@+id/imageBasketButton"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="right"
+            android:src="@drawable/ic_shopping_cart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_shopping_cart" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 <RelativeLayout
@@ -56,9 +71,24 @@ tools:context=".ShoppingList">
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true">
-    </ListView>
 
+
+
+    </ListView>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingBasketScanButton_scan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/grey"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:clickable="true"
+        app:fabCustomSize="70dp"
+        app:maxImageSize="50dp"
+        app:srcCompat="@drawable/ic_code_scanner_auto_focus_on"
+        app:tint="@color/white" />
 </RelativeLayout>
+
 
 
 

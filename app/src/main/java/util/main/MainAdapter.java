@@ -76,7 +76,7 @@ public class MainAdapter extends BaseExpandableListAdapter {
         String child = (String) getChild(groupPosition, childPosition);
         String child_parent = (String) getGroup(groupPosition);
         LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if (child.equals("+") || child_parent.equals("Menu")){
+        if (child.equals("+") || child_parent.equals("Menu") || child_parent.equals("Shopping Lists")){
             convertView = layoutInflater.inflate(R.layout.list_item2, null);
         } else {
             convertView = layoutInflater.inflate(R.layout.list_item, null);

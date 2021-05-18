@@ -24,9 +24,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -58,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
     HashMap<String, List<String>> listItem;
     MainAdapter adapter;
     List<PantryItem> pantryItems;
-
+    private static boolean runOnce = false;
     //db stuff
     SharedClass sc;
     DatabaseShopIst db;
@@ -102,14 +104,17 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
         if (empty){
             AsyncTask.execute(this::initListData);
         }*/
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                Database.clearDatabase(sc);
-                Database.fillDatabase(sc);
-                initListData();
-            }
-        });
+        if(!runOnce) {
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    Database.clearDatabase(sc);
+                    Database.fillDatabase(sc);
+                    initListData();
+                }
+            });
+            runOnce = true;
+        }
     }
 
     public static MainActivity getInstance() {
@@ -162,8 +167,6 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
                 //TODO Fill time
                 list3.add(item.name);
             }
-
-            list3.add("+");
             listItem.put(listGroup.get(2), list3);
         });
 
@@ -206,9 +209,9 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
                     new_list_type = "Shopping";
                     openDialog();
                 } else {
-                    /*Intent intent = new Intent(MainActivity.this, ShoppingList.class);
+                    Intent intent = new Intent(MainActivity.this, ShoppingList.class);
                     intent.putExtra(EXTRA_MESSAGE, item);
-                    startActivity(intent);*/
+                    startActivity(intent);
                 }
                 break;
         }
@@ -262,15 +265,31 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
 
         //Toast.makeText(getApplicationContext(), list.getText().toString(), Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(MainActivity.this, Share.class);
-        intent.putExtra(EXTRA_MESSAGE, list.getText().toString());
-        startActivity(intent);
+        AsyncTask.execute(() -> {
+            String[] array;
+            List<String> list1 = new ArrayList<>();
+            array = getResources().getStringArray(R.array.group1);
+            for (String item : array) {
+                list1.add(item);
+            }
+            listItem.put(listGroup.get(0), list1);
+        });
+
+        AsyncTask.execute(() -> {
+            Pantry pantry = db.pantryDAO().getPantry(list.getText().toString());
+            String URL = "http://10.0.2.2:8080/api/v1/pantries/" + pantry.server_id;
+            Log.d("Debug", URL);
+
+            Intent intent = new Intent(MainActivity.this, Share.class);
+            intent.putExtra(EXTRA_MESSAGE, URL);
+            startActivity(intent);
+        });
     }
 
     public void createPantry(String name) {
         try {
             RequestQueue requestQueue = Volley.newRequestQueue(this);
-            String URL = "http://85.241.64.96:8080/api/v1/pantries";
+            String URL = "http://10.0.2.2:8080/api/v1/pantries";
             JSONObject jsonBody = new JSONObject();
             Date date = new Date();
             Timestamp timestamp = new Timestamp(date.getTime());
