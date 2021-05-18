@@ -31,7 +31,7 @@ import util.db.queryInterfaces.PantryItem;
 import util.main.PantryListAdapter;
 import util.main.SharedClass;
 
-public class PantryList extends AppCompatActivity{
+public class PantryList extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private String name;
     PantryDAO pantryDAO;

@@ -1,8 +1,11 @@
 package pt.ulisboa.tecnico.cmov.shopist;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.FragmentManager;
 
 import android.app.Activity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -24,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.shopist.Pantry.ItemScan;
+import pt.ulisboa.tecnico.cmov.shopist.Pantry.Maps.MapsFragment;
+import util.db.entities.Shop;
 import util.db.queryInterfaces.PantryItem;
 import util.db.queryInterfaces.ShopItem;
 import util.main.SharedClass;
@@ -41,7 +46,12 @@ public class ShoppingList extends AppCompatActivity {
 
         tempList.addAll(sharedClass.instanceDb().pantryDAO().getAllShopItems(shopName));
        final StableAdapter adapter = new StableAdapter(this, tempList);
-       listView.setAdapter(adapter);
+       runOnUiThread(new Runnable() {
+           @Override
+           public void run() {
+               listView.setAdapter(adapter);
+           }
+       });
 
        /* listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -72,6 +82,7 @@ public class ShoppingList extends AppCompatActivity {
         shopName = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
         TextView textView = (TextView) findViewById(R.id.textView);
         textView.setText(shopName);
+        AsyncTask.execute(this::setMap);
         AsyncTask.execute(this::fillList);
 
         ImageButton ib =(ImageButton) findViewById(R.id.imageBasketButton);
@@ -86,7 +97,19 @@ public class ShoppingList extends AppCompatActivity {
         handleScannerButton();
 
     }
+    private void setMap(){
+        Shop shop = sharedClass.instanceDb().pantryDAO().getShop(shopName);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        Log.w("SHOP_LAT_LON", "latitude = " + shop.latitude + " longitude = " + shop.longitude);
+        MapsFragment mapsFragment = new MapsFragment();
 
+        mapsFragment.setArgs(shop.latitude, shop.longitude, this);
+
+        transaction.replace(R.id.mapView, mapsFragment);
+        transaction.commit();
+
+    }
     class StableAdapter extends BaseAdapter {
         Context context;
         String[] data;

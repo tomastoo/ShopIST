@@ -37,7 +37,13 @@ public class Database {
     public static void clearDatabase(SharedClass sharedClass) {
         PantryDAO pantryDAO = sharedClass.instanceDb().pantryDAO();
         //pantryDAO.nukeInvalidPantries();
+    }
 
+    public static void dropLocalDb(SharedClass sharedClass){
+        PantryDAO pantryDAO = sharedClass.instanceDb().pantryDAO();
+        pantryDAO.nukePantryItems();
+        pantryDAO.nukeShops();
+        pantryDAO.nukePantries();
     }
 
 }

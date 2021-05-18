@@ -110,8 +110,8 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
-                    Database.clearDatabase(sc);
-                    //Database.fillDatabase(sc);
+                    Database.dropLocalDb(sc);
+                    Database.fillDatabase(sc);
                     initListData();
                 }
             });
