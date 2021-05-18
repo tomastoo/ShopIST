@@ -102,13 +102,15 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
         });
         if (empty){
             AsyncTask.execute(this::initListData);
-        }*/
+        }
+
+         */
         if(!runOnce) {
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
                     Database.clearDatabase(sc);
-                    Database.fillDatabase(sc);
+                    //Database.fillDatabase(sc);
                     initListData();
                 }
             });
@@ -240,8 +242,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
                 adapter.notifyDataSetChanged();
                 break;
             case "Pantry":
-                Pantry pantry = new Pantry(name);
-                createPantry(name);
+                Pantry pantry = createPantry(name);
                 AsyncTask.execute(() -> db.pantryDAO().insertPantry(pantry));
                 //  PantryList pantryList = new PantryList(name);
                 // db.pantryListDAO().insertPantryList(pantryList);
@@ -285,8 +286,9 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
         });
     }
 
-    public void createPantry(String name) {
+    public Pantry createPantry(String name) {
         try {
+            Pantry p = new Pantry(name);
             RequestQueue requestQueue = Volley.newRequestQueue(this);
             String URL = "http://10.0.2.2:8080/api/v1/pantries";
             JSONObject jsonBody = new JSONObject();
@@ -301,6 +303,8 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
                 double longitude = gpsTracker.getLongitude();
                 jsonBody.put("longitude", longitude);
                 jsonBody.put("latitude", latitude);
+                p.latitude = latitude;
+                p.longitude = longitude;
             }else{
                 gpsTracker.showSettingsAlert();
             }
@@ -351,9 +355,11 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
             };
 
             requestQueue.add(stringRequest);
+            return p;
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
 

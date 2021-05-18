@@ -5,6 +5,8 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import org.joda.time.DateTime;
+
 import java.util.List;
 
 import util.db.entities.Pantry;
@@ -21,6 +23,9 @@ public interface PantryDAO {
  @Query("SELECT * FROM pantry WHERE pantry.name = :pantryName")
     Pantry getPantry(String pantryName);
 
+ @Query("SELECT * FROM pantry WHERE pantry.server_id = :serverId")
+    Pantry getPantryServerId(long serverId);
+
  @Query("SELECT * FROM pantryItem WHERE pantryitem.id = :id")
     PantryItem getPantryItem(long id);
 
@@ -33,6 +38,9 @@ public interface PantryDAO {
  @Query("SELECT * FROM shop")
     List<Shop> getAllShops();
 
+ @Query("SELECT * FROM shop WHERE server_id = :serverid")
+    Shop getShopByServerId(long serverid);
+
  @Query("SELECT pi.id id, pi.name as name, pi.quantity as quantity, pi.stock as stock, pi.barcode as barcode FROM shop AS s INNER JOIN pantryItem AS pi ON pi.shopId = s.id " +
          " WHERE s.name = :shopName" +
          " AND pi.stock < pi.quantity ")
@@ -40,9 +48,14 @@ public interface PantryDAO {
 
  @Query("DELETE FROM pantry")
     void nukePantries();
+ @Query("DELETE FROM pantry WHERE pantry.server_id = 0")
+    void nukeInvalidPantries();
 
  @Query("DELETE FROM PantryItem")
     void nukePantryItems();
+
+ @Query("DELETE FROM PantryItem WHERE pantryId = :pantryId")
+    void nukePantryItemsFromPantryId(long pantryId);
 
  @Query("DELETE FROM Shop")
     void nukeShops();
@@ -58,6 +71,13 @@ public interface PantryDAO {
 
  @Update
  void updatePantryItem(PantryItem pantryItem);
+
+ @Update
+ void updatePantry(Pantry pantry);
+
+ @Update
+ void updateShop(Shop shop);
+
 
 
 

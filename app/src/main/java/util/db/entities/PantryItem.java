@@ -41,6 +41,6 @@ public class PantryItem {
     @ColumnInfo(name = "stock")
     public int stock;
 
-    @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
-    public String time_stamp;
+
+    public long time_stamp;
 }

@@ -11,7 +11,7 @@ import util.db.entities.PantryItem;
 import util.db.entities.Shop;
 import util.db.queryInterfaces.PantryDAO;
 
-@Database(entities = { Pantry.class, PantryItem.class, Shop.class}, version = 3)
+@Database(entities = { Pantry.class, PantryItem.class, Shop.class}, version = 4)
 public abstract class DatabaseShopIst extends RoomDatabase {
     private static final String DB_NAME = "shop_ist";
     private static DatabaseShopIst instance;
