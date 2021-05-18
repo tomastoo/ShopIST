@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.cmov.shopist;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
 
     public static final String EXTRA_MESSAGE = "pt.ulisboa.tecnico.cmov.shopist.MESSAGE";
     public static final double CLOSE_DISTANCE = 30;
+    private final int REQUEST_CODE = 11;
 
     private GpsTracker gpsTracker;
 
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
     List<util.db.entities.Pantry> listPantry;
     List<util.db.entities.Shop> listShops;
 
+    String newItemName;
 
     // Main Activity Options
     ExpandableListView expandableListView;
@@ -258,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
                 //TODO Fill time
                 list3.add(item.name);
             }
+            list3.add("+");
             listItem.put(listGroup.get(2), list3);
         });
 
@@ -316,13 +320,16 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
 
     @Override
     public void applyName(String name) {
+        this.newItemName = name;
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivityForResult(intent, REQUEST_CODE);
+    }
+
+    public void applyNameAux(double latitude, double longitude){
         List<String> list;
+        String name = newItemName;
         switch (new_list_type) {
             case "Shopping":
-/*
-                util.db.entities.ShoppingList shoppingList = new util.db.entities.ShoppingList(name);
-                db.shoppingListDAO().insertShoppingList(shoppingList);
-*/
 
                 list = listItem.get(listGroup.get(2));
                 list.set((list.size() - 1), name);
@@ -332,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
                 adapter.notifyDataSetChanged();
                 break;
             case "Pantry":
-                Pantry pantry = createPantry(name);
+                Pantry pantry = createPantry(name, latitude, longitude);
                 AsyncTask.execute(() -> db.pantryDAO().insertPantry(pantry));
                 //  PantryList pantryList = new PantryList(name);
                 // db.pantryListDAO().insertPantryList(pantryList);
@@ -376,7 +383,23 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
         });
     }
 
-    public Pantry createPantry(String name) {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE) {
+            if(resultCode == Activity.RESULT_OK){
+                double latitude = data.getDoubleExtra("latitude", 0);
+                double longitude = data.getDoubleExtra("longitude", 0);
+                applyNameAux(latitude, longitude);
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                // Write your code if there's no result
+            }
+        }
+    } //onActivityResult
+
+    public Pantry createPantry(String name, double latitude, double longitude) {
         try {
             Pantry p = new Pantry(name);
             RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -387,7 +410,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
             jsonBody.put("timestamp", timestamp.toString());
             jsonBody.put("name", name);
 
-            gpsTracker = new GpsTracker(MainActivity.this);
+/*            gpsTracker = new GpsTracker(MainActivity.this);
             if(gpsTracker.canGetLocation()){
                 double latitude = gpsTracker.getLatitude();
                 double longitude = gpsTracker.getLongitude();
@@ -397,7 +420,13 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
                 p.longitude = longitude;
             }else{
                 gpsTracker.showSettingsAlert();
-            }
+            }*/
+
+            jsonBody.put("longitude", longitude);
+            jsonBody.put("latitude", latitude);
+            p.latitude = latitude;
+            p.longitude = longitude;
+
 
             String androidId = Settings.Secure.getString(getContentResolver(),
                     Settings.Secure.ANDROID_ID);
@@ -451,7 +480,6 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
         }
         return null;
     }
-
 
 }
 
