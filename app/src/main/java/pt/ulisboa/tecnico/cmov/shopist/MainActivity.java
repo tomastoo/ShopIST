@@ -25,10 +25,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -53,7 +55,7 @@ import util.main.SharedClass;
 public class MainActivity extends AppCompatActivity implements DialogAdd.DialogAddListener, ExpandableListView.OnChildClickListener {
 
     public static final String EXTRA_MESSAGE = "pt.ulisboa.tecnico.cmov.shopist.MESSAGE";
-    public static final double CLOSE_DISTANCE = 30000000;
+    public static final double CLOSE_DISTANCE = 30;
 
     private GpsTracker gpsTracker;
 
@@ -163,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
     }
 
     public Shop getNearestShop(LatLng myLatLng){
-        listShops = db.pantryDAO().getAllShops();
+        listShops =  db.pantryDAO().getShopsWithItems();
         double finalDistance = Double.MAX_VALUE;
         Shop nearestShop = null;
         for(util.db.entities.Shop shop: listShops){

@@ -5,8 +5,6 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-//import org.joda.time.DateTime;
-
 import java.util.List;
 
 import util.db.entities.Pantry;
@@ -29,6 +27,9 @@ public interface PantryDAO {
  @Query("SELECT * FROM pantryItem WHERE pantryitem.id = :id")
     PantryItem getPantryItem(long id);
 
+ @Query("SELECT MAX(p.name) name FROM pantry p JOIN pantryitem pi ON p.id = pi.pantryId WHERE pi.id = :id")
+    String getPantryNameByItem(long id);
+
  @Query("SELECT * FROM pantryItem WHERE pantryitem.barcode = :barcode")
     PantryItem getPantryItem(String barcode);
 
@@ -37,6 +38,12 @@ public interface PantryDAO {
 
  @Query("SELECT * FROM shop")
     List<Shop> getAllShops();
+
+
+ @Query("SELECT * FROM shop s WHERE s.id IN (SELECT sh.id FROM shop AS sh INNER JOIN pantryItem AS pi ON pi.shopId = s.id " +
+         " WHERE 1 = 1" +
+         " AND pi.stock < pi.quantity )")
+    List<Shop> getShopsWithItems();
 
  @Query("SELECT * FROM shop WHERE server_id = :serverid")
     Shop getShopByServerId(long serverid);
@@ -83,6 +90,8 @@ public interface PantryDAO {
 
  @Update
  void updateShop(Shop shop);
+
+
 
 
 
