@@ -332,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
         String name = newItemName;
         switch (new_list_type) {
             case "Shopping":
-                util.db.entities.Shop shoppingList = new util.db.entities.Shop(0,0,name,0);
+                util.db.entities.Shop shoppingList = new util.db.entities.Shop(latitude, longitude, name, 0);
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {

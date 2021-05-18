@@ -124,16 +124,13 @@ public class AddItemToPantry extends AppCompatActivity {
                 name = itemName.toString();
                 //price = Float.parseFloat(itemPrice.toString());
                 asyncInsert();
-
+                finish();
             }
         });
     }
 
     private void asyncInsert(){
         AsyncTask.execute(this::insertItem);
-        Intent intent = new Intent(this, PantryList.class);
-        intent.putExtra(MainActivity.EXTRA_MESSAGE, pantryName);
-        startActivity(intent);
     }
 
     private void insertItem(){
