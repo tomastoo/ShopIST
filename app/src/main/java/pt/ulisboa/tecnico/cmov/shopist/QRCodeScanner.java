@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.cmov.shopist;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,15 +24,32 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
 import com.google.common.util.concurrent.ListenableFuture;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 import java.util.concurrent.ExecutionException;
+
+import util.db.entities.Pantry;
+import util.db.queryInterfaces.PantryDAO;
 
 public class QRCodeScanner extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CAMERA = 0;
 
     private PreviewView previewView;
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
+
+    PantryDAO pantryDAO;
 
     private Button qrCodeFoundButton;
     private String qrCode;
@@ -48,7 +66,51 @@ public class QRCodeScanner extends AppCompatActivity {
         qrCodeFoundButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), qrCode, Toast.LENGTH_SHORT).show();
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                        (Request.Method.GET, qrCode, null, new Response.Listener<JSONObject>() {
+
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.d("Debug","Response is: " + response.toString());
+
+                                try {
+                                    long server_id = response.getLong("id");
+                                    double latitude = response.getDouble("latitude");
+                                    double longitude = response.getDouble("longitude");
+                                    String name = response.getString("name");
+                                    Pantry pantry = new Pantry(latitude, longitude, name, server_id);
+
+                                    AsyncTask.execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            pantryDAO.insertPantry(pantry);
+                                        }
+                                    });
+
+                                    finish();
+                                } catch (JSONException e) {
+                                    Log.d("Error","JSON Exception" );
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                NetworkResponse errorRes = error.networkResponse;
+                                String stringData = "";
+                                if(errorRes != null && errorRes.data != null){
+                                    try {
+                                        stringData = new String(errorRes.data,"UTF-8");
+                                    } catch (UnsupportedEncodingException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                Log.e("Error",error.toString());
+
+                            }
+                        });
+                //Toast.makeText(getApplicationContext(), qrCode, Toast.LENGTH_SHORT).show();
                 Log.i(MainActivity.class.getSimpleName(), "QR Code Found: " + qrCode);
             }
         });
