@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
         AsyncTask.execute(() -> {
             List<String> list3 = new ArrayList<>();
 
-            List<util.db.entities.Shop> lists_shopping = db.pantryDAO().getAllShops();
+            List<util.db.entities.Shop> lists_shopping = db.pantryDAO().getShopsWithItems();
 
             for(util.db.entities.Shop item : lists_shopping){
                 //TODO Fill time

@@ -39,6 +39,12 @@ public interface PantryDAO {
  @Query("SELECT * FROM shop")
     List<Shop> getAllShops();
 
+
+ @Query("SELECT * FROM shop s WHERE s.id IN (SELECT sh.id FROM shop AS sh INNER JOIN pantryItem AS pi ON pi.shopId = s.id " +
+         " WHERE 1 = 1" +
+         " AND pi.stock < pi.quantity )")
+    List<Shop> getShopsWithItems();
+
  @Query("SELECT * FROM shop WHERE server_id = :serverid")
     Shop getShopByServerId(long serverid);
 
