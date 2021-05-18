@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.util.Size;
 import android.view.View;
@@ -24,13 +25,19 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import org.json.JSONArray;
@@ -38,6 +45,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import util.db.entities.Pantry;
@@ -78,6 +87,7 @@ public class QRCodeScanner extends AppCompatActivity {
                                     double latitude = response.getDouble("latitude");
                                     double longitude = response.getDouble("longitude");
                                     String name = response.getString("name");
+                                    JSONArray guids= response.getJSONArray("guids");
                                     Pantry pantry = new Pantry(latitude, longitude, name, server_id);
 
                                     AsyncTask.execute(new Runnable() {
@@ -86,6 +96,62 @@ public class QRCodeScanner extends AppCompatActivity {
                                             pantryDAO.insertPantry(pantry);
                                         }
                                     });
+
+                                    RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                                    String URL = "http://10.0.2.2:8080/api/v1/pantries/" + String.valueOf(server_id);
+                                    JSONObject jsonBody = new JSONObject();
+                                    Date date = new Date();
+                                    Timestamp timestamp = new Timestamp(date.getTime());
+                                    jsonBody.put("timestamp", timestamp.toString());
+                                    jsonBody.put("name", name);
+                                    jsonBody.put("id", server_id);
+                                    jsonBody.put("latitude", latitude);
+                                    jsonBody.put("longitude", longitude);
+                                    String androidId = "["+ Settings.Secure.getString(getContentResolver(),
+                                            Settings.Secure.ANDROID_ID) + "]";
+                                    guids.put(androidId);
+                                    jsonBody.put("guids", guids);
+
+                                    final String requestBody = jsonBody.toString();
+
+                                    StringRequest stringRequest = new StringRequest(Request.Method.PUT, URL, new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            Log.i("VOLLEY", response);
+                                        }
+                                    }, new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+                                            Log.e("VOLLEY", error.toString());
+                                        }
+                                    }) {
+                                        @Override
+                                        public String getBodyContentType() {
+                                            return "application/json; charset=utf-8";
+                                        }
+
+                                        @Override
+                                        public byte[] getBody() throws AuthFailureError {
+                                            try {
+                                                return requestBody == null ? null : requestBody.getBytes("utf-8");
+                                            } catch (UnsupportedEncodingException uee) {
+                                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
+                                                return null;
+                                            }
+                                        }
+
+                                        @Override
+                                        protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                                            String responseString = "";
+                                            if (response != null) {
+                                                responseString = String.valueOf(response.statusCode);
+                                                // can get more details such as response.headers
+                                            }
+                                            return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                                        }
+                                    };
+
+                                    requestQueue.add(stringRequest);
 
                                     finish();
                                 } catch (JSONException e) {
