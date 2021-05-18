@@ -5,8 +5,6 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import org.joda.time.DateTime;
-
 import java.util.List;
 
 import util.db.entities.Pantry;
@@ -28,6 +26,9 @@ public interface PantryDAO {
 
  @Query("SELECT * FROM pantryItem WHERE pantryitem.id = :id")
     PantryItem getPantryItem(long id);
+
+ @Query("SELECT MAX(p.name) name FROM pantry p JOIN pantryitem pi ON p.id = pi.pantryId WHERE pi.id = :id")
+    String getPantryNameByItem(long id);
 
  @Query("SELECT * FROM pantryItem WHERE pantryitem.barcode = :barcode")
     PantryItem getPantryItem(String barcode);

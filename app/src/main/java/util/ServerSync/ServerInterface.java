@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -18,6 +19,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayObjectRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -25,10 +27,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.shopist.GpsTracker;
 import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
@@ -155,7 +160,12 @@ public class ServerInterface {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.d("Debug","Response is: " + response.toString());
-                        pantryDAO.nukePantryItemsFromPantryId((int)p.id);
+                        AsyncTask.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                pantryDAO.nukePantryItemsFromPantryId((int)p.id);
+                            }
+                        });
                         if(response.length() > 0) {
 
                             for (int i = 0; i < response.length(); i++) {
@@ -168,7 +178,12 @@ public class ServerInterface {
                                     String barcode = pantryItemsJson.getString("barcode");
 
                                     PantryItem pi = new PantryItem(p.id,(int)shop, quantity,stock,name, barcode);
-                                    pantryDAO.insertPantryItem(pi);
+                                    AsyncTask.execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            pantryDAO.insertPantryItem(pi);
+                                        }
+                                    });
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -299,10 +314,6 @@ public class ServerInterface {
 
     }
 
-
-
-
-
     //gets all pantries and then they are inserted in our local DB
     public void getPantries(String androidId){
         String url = serverUrl + "api/v1/pantries_guid/";
@@ -378,6 +389,65 @@ public class ServerInterface {
 
     public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);
+    }
+
+
+    public void updatePantryItem(PantryItem pi, String pantryName){
+        try {
+            RequestQueue requestQueue = Volley.newRequestQueue(_context);
+            String androidId = Settings.Secure.getString(_context.getContentResolver(),
+                    Settings.Secure.ANDROID_ID);
+            String URL = serverUrl + "api/v1/pantryItems/"+ pantryName + "/" + androidId;
+            JSONObject jsonBody = new JSONObject();
+            jsonBody.put("name", pi.name);
+            jsonBody.put("barcode", pi.barcode);
+            jsonBody.put("stock", pi.stock);
+            jsonBody.put("quantity", pi.quantity);
+            jsonBody.put("shop", pi.shopId);
+
+            final String requestBody = jsonBody.toString();
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.i("VOLLEY", response);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("VOLLEY", error.toString());
+                }
+            }) {
+                @Override
+                public String getBodyContentType() {
+                    return "application/json; charset=utf-8";
+                }
+
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    try {
+                        return requestBody == null ? null : requestBody.getBytes("utf-8");
+                    } catch (UnsupportedEncodingException uee) {
+                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
+                        return null;
+                    }
+                }
+
+                @Override
+                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                    String responseString = "";
+                    if (response != null) {
+                        responseString = String.valueOf(response.statusCode);
+                        // can get more details such as response.headers
+                    }
+                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                }
+            };
+
+            requestQueue.add(stringRequest);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }
