@@ -42,6 +42,9 @@ public interface PantryDAO {
  @Query("SELECT * FROM shop WHERE server_id = :serverid")
     Shop getShopByServerId(long serverid);
 
+ @Query("SELECT * FROM shop WHERE shop.name = :serverName")
+    Shop getShop(String serverName);
+
  @Query("SELECT pi.id id, pi.name as name, pi.quantity as quantity, pi.stock as stock, pi.barcode as barcode FROM shop AS s INNER JOIN pantryItem AS pi ON pi.shopId = s.id " +
          " WHERE s.name = :shopName" +
          " AND pi.stock < pi.quantity ")
@@ -60,6 +63,9 @@ public interface PantryDAO {
 
  @Query("DELETE FROM Shop")
     void nukeShops();
+
+ @Query("DELETE FROM pantryitem WHERE pantryitem.id = :id")
+    void removePantryItem(long id);
 
  @Insert
     void insertPantryItem(PantryItem pantryItem);

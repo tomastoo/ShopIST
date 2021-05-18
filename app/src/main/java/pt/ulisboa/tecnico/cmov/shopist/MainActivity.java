@@ -39,6 +39,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import pt.ulisboa.tecnico.cmov.shopist.Pantry.PantryList;
 import util.db.Database;
 import util.db.DatabaseShopIst;
 import util.db.entities.Pantry;
@@ -109,8 +110,8 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
-                    Database.clearDatabase(sc);
-                    //Database.fillDatabase(sc);
+                    Database.dropLocalDb(sc);
+                    Database.fillDatabase(sc);
                     initListData();
                 }
             });

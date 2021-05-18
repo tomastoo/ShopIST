@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import util.ServerSync.ServerInterface;
+import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
+import pt.ulisboa.tecnico.cmov.shopist.R;
 import util.db.entities.PantryItem;
 import util.db.entities.Shop;
 import util.db.queryInterfaces.PantryDAO;
@@ -137,7 +139,6 @@ public class AddItemToPantry extends AppCompatActivity {
     private void insertItem(){
         PantryItem pantryItem = new PantryItem(pantryId, selectedShop.id, quantity, stock, name, barcode);
         pantryDao.insertPantryItem(pantryItem);
-        ServerInterface.getInstance(this).updatePantryItem(pantryItem, pantryName);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

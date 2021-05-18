@@ -19,10 +19,10 @@ public class Database {
 
         long[] pantryIds = new long[] {
                 pantryDAO.insertPantry(new Pantry(38.73752054599338, -9.30328335632761, "Taguspark", 1)),
-                pantryDAO.insertPantry(new Pantry(38.737020040649575, 38.737020040649575, "Alameda", 2))
+                pantryDAO.insertPantry(new Pantry(38.73700329289796, -9.138705001720002, "Alameda", 2))
         };
 
-        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],1, 2, "pao", null));
+        pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],1, 1, "pao", null));
         pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],2, 1, "queijo", null));
         pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],3 ,0, "fiambre", null));
         pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],4 ,0, "tomates", null));
@@ -37,7 +37,13 @@ public class Database {
     public static void clearDatabase(SharedClass sharedClass) {
         PantryDAO pantryDAO = sharedClass.instanceDb().pantryDAO();
         //pantryDAO.nukeInvalidPantries();
+    }
 
+    public static void dropLocalDb(SharedClass sharedClass){
+        PantryDAO pantryDAO = sharedClass.instanceDb().pantryDAO();
+        pantryDAO.nukePantryItems();
+        pantryDAO.nukeShops();
+        pantryDAO.nukePantries();
     }
 
 }

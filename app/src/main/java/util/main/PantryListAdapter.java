@@ -28,7 +28,16 @@ public class PantryListAdapter extends ArrayAdapter<PantryItem> {
         if(convertView == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_pantry_list, parent, false);
         }
+/*        convertView.setClickable(true);
+        convertView.setFocusable(true);
+        convertView.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+                pantryItem.quantity -= 1;
+            }
+
+        });*/
         TextView name = (TextView) convertView.findViewById(R.id.txt_view_name_pantry_item);
         name.setText(pantryItem.name);
         name.setEllipsize(TextUtils.TruncateAt.END);
@@ -39,5 +48,11 @@ public class PantryListAdapter extends ArrayAdapter<PantryItem> {
 
         return convertView;
     }
+
+    @Override
+    public boolean isEnabled(int position){
+        return true;
+    }
+
 }
 
