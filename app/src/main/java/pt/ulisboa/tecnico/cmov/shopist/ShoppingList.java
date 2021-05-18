@@ -2,11 +2,13 @@ package pt.ulisboa.tecnico.cmov.shopist;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,8 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,15 +28,19 @@ import util.db.queryInterfaces.ShopItem;
 import util.main.SharedClass;
 
 public class ShoppingList extends AppCompatActivity {
+    private static int REQUEST_CODE = 1;
+    private String barcode;
     private SharedClass sharedClass;
     private String shopName;
     private void fillList() {
         ListView listView =  findViewById(R.id.ListViewShoppingList);
 
         //ShopDAO shopDAO = sharedClass.dbShopIst.shopDAO();
+        ArrayList<PantryItem> tempList = new ArrayList<>();
 
-       final StableAdapter adapter = new StableAdapter(this, sharedClass.instanceDb().pantryDAO().getAllShopItems(shopName));
-        listView.setAdapter(adapter);
+        tempList.addAll(sharedClass.instanceDb().pantryDAO().getAllShopItems(shopName));
+       final StableAdapter adapter = new StableAdapter(this, tempList);
+       listView.setAdapter(adapter);
 
        /* listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -74,13 +82,11 @@ public class ShoppingList extends AppCompatActivity {
                 startActivity(i);
             }
         });
+        handleScannerButton();
 
     }
 
     class StableAdapter extends BaseAdapter {
-
-
-
         Context context;
         String[] data;
         ArrayList<ShopItem> shoppingItems = new ArrayList<>();
@@ -91,9 +97,9 @@ public class ShoppingList extends AppCompatActivity {
             // TODO Auto-generated constructor stub
             this.context = context;
 
-
             for (PantryItem s : data ) {
-                shoppingItems.add(new ShopItem(s.name, String.valueOf(s.quantity-s.stock)));
+                if (!isInBucketList(s.barcode, s.name))
+                    shoppingItems.add(new ShopItem(s.id, s.name, String.valueOf(s.quantity-s.stock)));
             }
 
             inflater = (LayoutInflater) context
@@ -155,6 +161,45 @@ public class ShoppingList extends AppCompatActivity {
         }
     }
 
+    private boolean isInBucketList(String barcode, String name) {
+        for (ShopItem si : SharedClass.getBasketList()) {
+            if(si.barcode!=null && !si.barcode.isEmpty() && si.barcode.equals(barcode) ) return true;
+            else if ((si.barcode == null || si.barcode.isEmpty()) && si.name.equals(name) ) return true;
+        }
+        return false;
+    }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == REQUEST_CODE && Activity.RESULT_OK == resultCode) {
+            barcode = intent.getStringExtra("Barcode");
+            Log.w("BARCODE", String.valueOf(barcode));
+            AsyncTask.execute(this::addBarcodeToBasket);
+        }
+    }
+
+
+    private void handleScannerButton(){
+        FloatingActionButton scannerBtn = (FloatingActionButton) findViewById(R.id.floatingBasketScanButton_scan);
+        scannerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openItemScanActivity();
+            }
+        });
+    }
+
+    private void openItemScanActivity(){
+        Intent intent = new Intent(this, ItemScan.class);
+        startActivityForResult(intent, REQUEST_CODE);
+    }
+
+    private void addBarcodeToBasket() {
+        util.db.entities.PantryItem pi =  sharedClass.instanceDb().pantryDAO().getPantryItem(barcode);
+        SharedClass.getBasketList().add(new ShopItem(pi.id, pi.name, String.valueOf(pi.quantity-pi.stock)));
+        fillList();
+    }
 
 }

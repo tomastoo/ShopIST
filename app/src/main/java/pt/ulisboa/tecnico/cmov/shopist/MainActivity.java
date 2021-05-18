@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
     HashMap<String, List<String>> listItem;
     MainAdapter adapter;
     List<PantryItem> pantryItems;
-
+    private static boolean runOnce = false;
     //db stuff
     SharedClass sc;
     DatabaseShopIst db;
@@ -101,14 +101,17 @@ public class MainActivity extends AppCompatActivity implements DialogAdd.DialogA
         if (empty){
             AsyncTask.execute(this::initListData);
         }*/
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                Database.clearDatabase(sc);
-                Database.fillDatabase(sc);
-                initListData();
-            }
-        });
+        if(!runOnce) {
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    Database.clearDatabase(sc);
+                    Database.fillDatabase(sc);
+                    initListData();
+                }
+            });
+            runOnce = true;
+        }
     }
 
     public static MainActivity getInstance() {

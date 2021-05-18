@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmov.shopist;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -14,8 +15,11 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 
+import util.db.entities.PantryItem;
 import util.db.queryInterfaces.ShopItem;
 import util.main.SharedClass;
 
@@ -34,6 +38,26 @@ public class BasketList extends AppCompatActivity {
         setContentView(R.layout.activity_shopping_basketlist);
         sharedClass = (SharedClass)getApplicationContext();
         AsyncTask.execute(this::fillList);
+        FloatingActionButton checkoutBasket = (FloatingActionButton)findViewById(R.id.floatingCheckOutBasketButton);
+
+        checkoutBasket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (ShopItem si: SharedClass.getBasketList()) {
+                                PantryItem pi = sharedClass.instanceDb().pantryDAO().getPantryItem(si.id);
+                                pi.stock = pi.quantity;
+                                sharedClass.instanceDb().pantryDAO().updatePantryItem(pi);
+                            }
+                        SharedClass.getBasketList().clear();
+                        BasketList.this.finish();
+                    }
+                });
+
+            }
+        });
     }
 
     @Override

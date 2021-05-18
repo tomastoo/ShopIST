@@ -71,9 +71,24 @@ tools:context=".ShoppingList">
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true">
-    </ListView>
 
+
+
+    </ListView>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingBasketScanButton_scan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/grey"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:clickable="true"
+        app:fabCustomSize="70dp"
+        app:maxImageSize="50dp"
+        app:srcCompat="@drawable/ic_code_scanner_auto_focus_on"
+        app:tint="@color/white" />
 </RelativeLayout>
+
 
 
 
