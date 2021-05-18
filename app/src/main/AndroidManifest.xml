@@ -26,7 +26,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ShopIST">
         <activity android:name=".QRCodeScanner"></activity>
-        <activity android:name=".AddItemToPantry" />
+        <activity android:name=".Pantry.AddItemToPantry" />
         <activity android:name=".Share" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -40,8 +40,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".ItemScan" />
-        <activity android:name=".PantryList" />
+        <activity android:name=".Pantry.ItemScan" />
+        <activity android:name=".Pantry.PantryList" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

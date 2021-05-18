@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.shopist;
+package pt.ulisboa.tecnico.cmov.shopist.Pantry;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -12,13 +12,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.Room;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
+import pt.ulisboa.tecnico.cmov.shopist.Pantry.Maps.MapsFragment;
+import pt.ulisboa.tecnico.cmov.shopist.R;
 import util.db.entities.Pantry;
 import util.db.queryInterfaces.PantryDAO;
 import util.db.queryInterfaces.PantryItem;
@@ -34,6 +36,9 @@ public class PantryList extends AppCompatActivity {
     private PantryListAdapter pantryListAdapter;
     private SharedClass sc;
     private Pantry pantry;
+    //private GMapLocationListener gMapLocationListener;
+    LatLng myLocation = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,15 +48,24 @@ public class PantryList extends AppCompatActivity {
         Intent intent = getIntent();
         name = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
         pantryDAO = sc.instanceDb().pantryDAO();
-
+        //gMapLocationListener = new GMapLocationListener(this);
+        //handleMapLocation();
         AsyncTask.execute(this::showItemList);
-       // AsyncTask.execute(this::setMap);
+        AsyncTask.execute(this::setMap);
 
         TextView textView = (TextView) findViewById(R.id.textView);
         textView.setText(name);
         handleNewItemButton();
-
     }
+
+/*
+    private void handleMapLocation(){
+        double myLocationLatitude = gMapLocationListener.getLocation().getLatitude();
+        double myLocationLongitude = gMapLocationListener.getLocation().getLatitude();
+        myLocation = new LatLng(myLocationLatitude, myLocationLongitude);
+    }
+*/
+
     private void handleNewItemButton(){
         FloatingActionButton newItemBtn = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         newItemBtn.setOnClickListener(new View.OnClickListener() {
@@ -70,18 +84,21 @@ public class PantryList extends AppCompatActivity {
     }
 
     private void setMap(){
-        //pantry = pantryDAO.getPantry(name);
+        pantry = pantryDAO.getPantry(name);
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         Log.w("PANTRY_LAT_LON", "latitude = " + pantry.latitude + " longitude = " + pantry.longitude);
         MapsFragment mapsFragment = new MapsFragment();
-        mapsFragment.setArgs(pantry.latitude, pantry.longitude);
+
+        mapsFragment.setArgs(pantry.latitude, pantry.longitude, this);
+
         transaction.replace(R.id.mapView, mapsFragment);
         transaction.commit();
+
     }
 
     private void showItemList(){
-        pantry = pantryDAO.getPantry(name);
+        //pantry = pantryDAO.getPantry(name);
         setPantryItemList();
         setArrayAdapter();
     }

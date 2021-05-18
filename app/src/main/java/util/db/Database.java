@@ -19,7 +19,7 @@ public class Database {
 
         long[] pantryIds = new long[] {
                 pantryDAO.insertPantry(new Pantry(38.73752054599338, -9.30328335632761, "Taguspark", 1)),
-                pantryDAO.insertPantry(new Pantry(38.737020040649575, 38.737020040649575, "Alameda", 2))
+                pantryDAO.insertPantry(new Pantry(38.73700329289796, -9.138705001720002, "Alameda", 2))
         };
 
         pantryDAO.insertPantryItem( new PantryItem((int)pantryIds[0], (int)shopIds[0],1, 2, "pao", null));

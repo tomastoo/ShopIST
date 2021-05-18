@@ -7,7 +7,7 @@
 
     android:orientation="vertical"
     android:layout_margin="10dp"
-    tools:context=".PantryList">
+    tools:context=".Pantry.PantryList">
 
     <TextView
         android:id="@+id/textView"
@@ -20,7 +20,7 @@
 
     <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="200dp"
     android:layout_margin="10dp">
         <com.google.android.gms.maps.MapView
             android:id="@+id/mapView"

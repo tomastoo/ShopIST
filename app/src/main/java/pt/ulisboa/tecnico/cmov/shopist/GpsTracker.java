@@ -59,6 +59,11 @@ public class GpsTracker extends Service implements LocationListener {
         this.mContext = context;
         getLocation();
     }
+
+    public LocationManager getLocationManager() {
+        return locationManager;
+    }
+// o tempo que demora de origin to destination
     /*
     public String getTimeToLocation(String origin, String destination) throws PackageManager.NameNotFoundException, InterruptedException, ApiException, IOException {
         ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
@@ -84,6 +89,7 @@ public class GpsTracker extends Service implements LocationListener {
         return duration.humanReadable;
     }
     */
+
     public Location getLocation() {
 
         try {
@@ -235,6 +241,7 @@ public class GpsTracker extends Service implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
+
     }
 
     @Override

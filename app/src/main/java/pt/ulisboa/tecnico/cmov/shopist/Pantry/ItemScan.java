@@ -1,7 +1,6 @@
-package pt.ulisboa.tecnico.cmov.shopist;
+package pt.ulisboa.tecnico.cmov.shopist.Pantry;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -17,6 +16,8 @@ import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.google.zxing.Result;
+
+import pt.ulisboa.tecnico.cmov.shopist.R;
 
 public class ItemScan extends AppCompatActivity {
     private int pantryId;

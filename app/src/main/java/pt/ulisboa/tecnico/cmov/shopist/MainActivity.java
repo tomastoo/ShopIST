@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import pt.ulisboa.tecnico.cmov.shopist.Pantry.PantryList;
 import util.db.Database;
 import util.db.DatabaseShopIst;
 import util.db.entities.Pantry;
