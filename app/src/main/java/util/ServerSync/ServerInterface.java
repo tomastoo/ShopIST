@@ -25,10 +25,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import pt.ulisboa.tecnico.cmov.shopist.GpsTracker;
 import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import util.db.entities.Pantry;
+import util.db.entities.PantryItem;
 import util.db.entities.Shop;
 import util.db.queryInterfaces.PantryDAO;
 import util.main.SharedClass;
@@ -75,6 +80,7 @@ public class ServerInterface {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.d("Debug","Response is: " + response.toString());
+
                         if(response.length() > 0)
                         {
                             for(int i = 0; i < response.length(); i++){
@@ -84,12 +90,26 @@ public class ServerInterface {
                                     double latitude = pantryJson.getDouble("latitude");
                                     double longitude = pantryJson.getDouble("longitude");
                                     String name = pantryJson.getString("name");
+                                    String date = pantryJson.getString("timestamp");
                                     Pantry pantry = new Pantry(latitude, longitude, name, server_id);
 
                                     AsyncTask.execute(new Runnable() {
                                         @Override
                                         public void run() {
-                                            pantryDAO.insertPantry(pantry);
+                                            Pantry p = pantryDAO.getPantry(name);
+                                            if (p != null) {
+                                                long serverDate = parseStringDateToLong(date);
+                                                if (p.time_stamp<serverDate) {
+                                                    p.time_stamp = serverDate;
+                                                    p.name = name;
+                                                    p.longitude = longitude;
+                                                    p.latitude = latitude;
+                                                    pantryDAO.updatePantry(p);
+                                                    updatePantry(p);
+                                                }
+                                            } else {
+                                                pantryDAO.insertPantry(pantry);
+                                            }
                                         }
                                     });
 
@@ -123,11 +143,77 @@ public class ServerInterface {
 
     }
 
+     private void updatePantry(Pantry p) {
+        String url = serverUrl + "api/v1/pantryItems/pantry/";
+        url += p.server_id;
+        Log.d("Debug","PantryUpdate ID is: " + p.server_id);
+        // Request a string response from the provided URL.
+
+        JsonArrayRequest jsonObjectRequest = new JsonArrayRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.d("Debug","Response is: " + response.toString());
+                        pantryDAO.nukePantryItemsFromPantryId((int)p.id);
+                        if(response.length() > 0) {
+
+                            for (int i = 0; i < response.length(); i++) {
+                                try {
+                                    JSONObject pantryItemsJson = response.getJSONObject(i);
+                                    String name = pantryItemsJson.getString("name");
+                                    long shop = pantryItemsJson.getLong("shop");
+                                    int stock = pantryItemsJson.getInt("stock");
+                                    int quantity = pantryItemsJson.getInt("quantity");
+                                    String barcode = pantryItemsJson.getString("barcode");
+
+                                    PantryItem pi = new PantryItem(p.id,(int)shop, quantity,stock,name, barcode);
+                                    pantryDAO.insertPantryItem(pi);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse errorRes = error.networkResponse;
+                        String stringData = "";
+                        if(errorRes != null && errorRes.data != null){
+                            try {
+                                stringData = new String(errorRes.data,"UTF-8");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        Log.e("Error",error.toString());
+
+                    }
+                });
+
+// Access the RequestQueue through your singleton class.
+        ServerInterface.getInstance(_context).addToRequestQueue(jsonObjectRequest);
+
+    }
+
+
+    private long parseStringDateToLong(String date)  {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        Date parsedDate = new Date();
+        try {
+            parsedDate = dateFormat.parse(date);
+        } catch (Exception e){};
+        return parsedDate.getTime()/1000;
+    }
+
     public void getShops() {
         String url = serverUrl + "api/v1/shops_location/";
 
         gpsTracker = new GpsTracker(_context);
-
         String location = "";
 
         if(gpsTracker.canGetLocation()){
@@ -155,7 +241,6 @@ public class ServerInterface {
                         Log.d("Debug","Response is: " + response.toString());
                         if(response.length() > 0)
                         {
-
                             for(int i = 0; i < response.length(); i++){
                                 try {
                                     JSONObject shopsJson = response.getJSONObject(i);
@@ -163,12 +248,23 @@ public class ServerInterface {
                                     double latitude = shopsJson.getDouble("latitude");
                                     double longitude = shopsJson.getDouble("longitude");
                                     String name = shopsJson.getString("name");
+                                    String date = shopsJson.getString("timestamp");
                                     Shop shop = new Shop(latitude, longitude, name, server_id);
 
                                     AsyncTask.execute(new Runnable() {
                                         @Override
                                         public void run() {
-                                            sharedClass.instanceDb().pantryDAO().insertShop(shop);
+                                            Shop s = pantryDAO.getShopByServerId(server_id);
+                                            if(s != null) {
+                                                long serverDate = parseStringDateToLong(date);
+                                                if (s.time_stamp < serverDate) {
+                                                    s.time_stamp = serverDate;
+                                                    s.latitude = latitude;
+                                                    s.longitude = longitude;
+                                                    s.name = name;
+                                                    pantryDAO.updateShop(s);
+                                                }
+                                            } else pantryDAO.insertShop(shop);
                                         }
                                     });
 
@@ -269,23 +365,6 @@ public class ServerInterface {
 
     }
 
-    /*
-    public void populatePantriesOnLocalDb(){
-        WorkRequest getPantriesWorkRequest = OneTimeWorkRequest.from(GetAllPantriesWork.class);
-        WorkManager.getInstance(_context.getApplicationContext()).enqueue(getPantriesWorkRequest);
-    }*/
-    public void updatePantryLists(){
-
-    }
-
-    public void updatePantryList(){
-
-    }
-
-
-    public void insertItem(){
-
-    }
 
     public RequestQueue getRequestQueue() {
         if (requestQueue == null) {
@@ -299,25 +378,6 @@ public class ServerInterface {
 
     public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);
-    }
-
-    public class GetAllPantriesWork extends Worker {
-        public GetAllPantriesWork(
-                @NonNull Context context,
-                @NonNull WorkerParameters params) {
-            super(context, params);
-        }
-
-        @Override
-        public Result doWork() {
-
-            // Do the work here--in this case, upload the images.
-            //updateShops();
-            getPantries();
-
-            // Indicate whether the work finished successfully with the Result
-            return Result.success();
-        }
     }
 
 }

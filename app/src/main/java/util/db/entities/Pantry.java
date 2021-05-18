@@ -32,7 +32,7 @@ public class Pantry {
     public String name;
 
 
-    @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
-    public String time_stamp;
+
+    public long time_stamp;
     
 }
