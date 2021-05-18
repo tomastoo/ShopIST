@@ -135,8 +135,11 @@ public class MapsFragment extends Fragment implements  GoogleApiClient.OnConnect
         this.mMap = googleMap;
     }
 
-    public void setArgs(double latitude, double longitude, Context mContext){
+    public void setMapsContext(Context mContext){
         this.mContext = mContext;
+    }
+
+    public void setArgs(double latitude, double longitude){
         destLatitude = latitude;
         destLongitude = longitude;
     }
@@ -302,6 +305,10 @@ public class MapsFragment extends Fragment implements  GoogleApiClient.OnConnect
         endMarker.position(polylineEndLatLng);
         endMarker.title("Destination");
         mMap.addMarker(endMarker);
+    }
+
+    public Location getMyLocation(){
+        return myLocation;
     }
 
     @Override

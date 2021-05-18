@@ -104,8 +104,8 @@ public class ShoppingList extends AppCompatActivity {
         Log.w("SHOP_LAT_LON", "latitude = " + shop.latitude + " longitude = " + shop.longitude);
         MapsFragment mapsFragment = new MapsFragment();
 
-        mapsFragment.setArgs(shop.latitude, shop.longitude, this);
-
+        mapsFragment.setArgs(shop.latitude, shop.longitude);
+        mapsFragment.setMapsContext(this);
         transaction.replace(R.id.mapView, mapsFragment);
         transaction.commit();
 

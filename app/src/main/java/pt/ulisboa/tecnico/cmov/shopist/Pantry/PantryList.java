@@ -94,7 +94,8 @@ public class PantryList extends AppCompatActivity {
         Log.w("PANTRY_LAT_LON", "latitude = " + pantry.latitude + " longitude = " + pantry.longitude);
         MapsFragment mapsFragment = new MapsFragment();
 
-        mapsFragment.setArgs(pantry.latitude, pantry.longitude, this);
+        mapsFragment.setArgs(pantry.latitude, pantry.longitude);
+        mapsFragment.setMapsContext(this);
 
         transaction.replace(R.id.mapView, mapsFragment);
         transaction.commit();
